@@ -1,1771 +1,1046 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STREAMFLIX — Modern World Project</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      background: #141414;
-      color: #fff;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      overflow-x: hidden;
-    }
-
-    body {
-      min-height: 100vh;
-    }
-
-    /* Header */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 48px;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
-      transition: background 0.3s;
-    }
-
-    header.scrolled {
-      background: #141414;
-    }
-
-    .logo {
-      color: #E50914;
-      font-weight: 900;
-      font-size: 28px;
-      letter-spacing: -1px;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .era-toggle {
-      display: flex;
-      gap: 4px;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 999px;
-      padding: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .era-tab {
-      background: transparent;
-      border: none;
-      color: #ccc;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      font-family: inherit;
-    }
-
-    .era-tab:hover {
-      color: #fff;
-    }
-
-    .era-tab.active {
-      background: #E50914;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(229, 9, 20, 0.5);
-    }
-
-    .era-tab.active[data-era="precoldwar"] {
-      background: #8B6F47;
-      box-shadow: 0 2px 8px rgba(139, 111, 71, 0.6);
-    }
-
-    .demo-toggle {
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(0, 0, 0, 0.45);
-      color: #f2f2f2;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
-      font-family: inherit;
-    }
-
-    .demo-toggle:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .demo-toggle.active {
-      background: #fff;
-      color: #111;
-      border-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.18);
-    }
-
-    nav ul {
-      display: flex;
-      gap: 22px;
-      list-style: none;
-      font-size: 14px;
-    }
-
-    nav a {
-      color: #e5e5e5;
-      text-decoration: none;
-    }
-
-    nav a:hover {
-      color: #b3b3b3;
-    }
-
-    /* Hero */
-    .hero {
-      height: 80vh;
-      min-height: 480px;
-      position: relative;
-      background:
-        linear-gradient(to top, #141414 0%, transparent 50%),
-        linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, transparent 60%),
-        linear-gradient(135deg, #1a1a2e 0%, #4a0e0e 50%, #1a1a1a 100%);
-      display: flex;
-      align-items: flex-end;
-      padding: 0 48px 100px 48px;
-    }
-
-    .hero-content {
-      max-width: 600px;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      color: #E50914;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      font-size: 52px;
-      font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 18px;
-    }
-
-    .hero p {
-      font-size: 17px;
-      line-height: 1.5;
-      color: #e5e5e5;
-      margin-bottom: 24px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn {
-      border: none;
-      padding: 12px 26px;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: #fff;
-      color: #000;
-    }
-
-    .btn-primary:hover {
-      background: #e5e5e5;
-    }
-
-    .btn-secondary {
-      background: rgba(109, 109, 110, 0.7);
-      color: #fff;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(109, 109, 110, 0.4);
-    }
-
-    /* Rows */
-    .row {
-      padding: 24px 48px;
-    }
-
-    .row h2 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    .row-subtitle {
-      font-size: 13px;
-      color: #999;
-      margin-bottom: 14px;
-      margin-top: -10px;
-    }
-
-    .cards {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      scrollbar-width: thin;
-      scrollbar-color: #333 transparent;
-    }
-
-    .cards::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    .cards::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 4px;
-    }
-
-    .card {
-      flex: 0 0 240px;
-      height: 340px;
-      border-radius: 4px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.25s, box-shadow 0.25s;
-      background: #222;
-    }
-
-    .card:hover,
-    .card:focus {
-      transform: scale(1.06);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
-      z-index: 5;
-    }
-
-    .card-poster {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      color: #fff;
-      position: relative;
-    }
-
-    /* The real <img> for poster art — fills the card and crops nicely */
-    .poster-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      /* fill the card, crop any overflow */
-      object-position: center;
-      /* center the image within the card */
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 0.4s ease-in;
-    }
-
-    .poster-image.loaded {
-      opacity: 1;
-    }
-
-    /* When a background image is loaded, this overlay sits on top for text contrast */
-    .card-poster::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.0) 35%, rgba(0, 0, 0, 0.25) 60%, rgba(0, 0, 0, 0.92) 100%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .card-poster.has-image::after {
-      /* When real image loads, suppress the icon */
-      content: '';
-      position: absolute;
-      inset: 0;
-    }
-
-    .card-top {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 14px 16px 0 16px;
-    }
-
-    .nflx-logo {
-      width: 22px;
-      height: 22px;
-      border-radius: 3px;
-      background: #E50914;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
-      font-family: 'Arial Black', sans-serif;
-      line-height: 1;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-icon {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 90px;
-      opacity: 0.22;
-      filter: grayscale(0.2);
-      pointer-events: none;
-    }
-
-    .card-poster.has-image .card-icon {
-      display: none;
-    }
-
-    .card-bottom {
-      position: relative;
-      z-index: 2;
-      padding: 0 16px 16px 16px;
-    }
-
-    .card-title {
-      font-size: 19px;
-      font-weight: 900;
-      line-height: 1.15;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
-      letter-spacing: -0.2px;
-    }
-
-    .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.9);
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    }
-
-    .meta-pill {
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      padding: 1px 6px;
-      border-radius: 2px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .card-badge {
-      background: #E50914;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 3px;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-badge.state-media {
-      background: #8B6F47;
-    }
-
-    .card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      display: flex;
-      align-items: flex-end;
-      padding: 18px;
-    }
-
-    .card:hover .card-overlay {
-      opacity: 1;
-    }
-
-    .card-info {
-      font-size: 12px;
-      color: #ccc;
-    }
-
-    /* Show themed gradients */
-    .poster-patriot {
-      background: linear-gradient(135deg, #8B0000 0%, #1a0000 100%);
-    }
-
-    .poster-temptation {
-      background: linear-gradient(180deg, #2c1810 0%, #5a3a1a 50%, #1a0a05 100%);
-    }
-
-    .poster-living-dead {
-      background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 50%, #000 100%);
-    }
-
-    .poster-fmj {
-      background: linear-gradient(135deg, #2d3a1f 0%, #4a5a30 50%, #1a200f 100%);
-    }
-
-    .poster-cooking {
-      background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%);
-    }
-
-    .poster-hangover {
-      background: linear-gradient(135deg, #1a2d4a 0%, #0a1525 100%);
-    }
-
-    .poster-designated {
-      background: linear-gradient(135deg, #1a3a5a 0%, #0a1525 100%);
-    }
-
-    .poster-bridge {
-      background: linear-gradient(135deg, #4a2d1a 0%, #1a0f05 100%);
-    }
-
-    .poster-legend {
-      background: linear-gradient(135deg, #1a4a1a 0%, #5a2d00 100%);
-    }
-
-    .poster-disjointed {
-      background: linear-gradient(135deg, #5a3d1a 0%, #1a2d1a 100%);
-    }
-
-    .poster-annapoorani {
-      background: linear-gradient(135deg, #c2410c 0%, #4a1a00 100%);
-    }
-
-    .poster-ic814 {
-      background: linear-gradient(135deg, #0c2340 0%, #1a1a1a 100%);
-    }
-
-    .poster-hasmukh {
-      background: linear-gradient(135deg, #7a1a1a 0%, #1a0a0a 100%);
-    }
-
-    .poster-if-only {
-      background: linear-gradient(135deg, #4a1a5a 0%, #1a0a2a 100%);
-    }
-
-    .poster-crown {
-      background: linear-gradient(135deg, #2d1a5a 0%, #5a4a1a 50%, #1a0a2a 100%);
-    }
-
-    .poster-cuties {
-      background: linear-gradient(135deg, #6a1a4a 0%, #2a0a1a 100%);
-    }
-
-    /* Pre-Cold War era poster themes — sepia, vintage, aged paper */
-    .poster-triumph {
-      background: linear-gradient(135deg, #2a2a2a 0%, #5c1a1a 60%, #1a0a0a 100%);
-    }
-
-    .poster-pravda {
-      background: linear-gradient(135deg, #7a1a1a 0%, #2a0a0a 100%);
-    }
-
-    .poster-cpi {
-      background: linear-gradient(135deg, #1a2a4a 0%, #6a3a1a 50%, #1a1a1a 100%);
-    }
-
-    .poster-hays {
-      background: linear-gradient(135deg, #6b5435 0%, #3d2817 100%);
-    }
-
-    .poster-luce {
-      background: linear-gradient(135deg, #2d4a2a 0%, #1a2a15 100%);
-    }
-
-    .poster-japan {
-      background: linear-gradient(135deg, #6a1a1a 0%, #1a1a1a 50%, #2a0a0a 100%);
-    }
-
-    .poster-moi {
-      background: linear-gradient(135deg, #1a2d4a 0%, #6a1a1a 100%);
-    }
-
-    .poster-sedition {
-      background: linear-gradient(135deg, #2a2a4a 0%, #1a1015 100%);
-    }
-
-    .poster-book-burning {
-      background: linear-gradient(135deg, #4a2d1a 0%, #6a3a0a 50%, #1a0a05 100%);
-    }
-
-    .poster-eternal-jew {
-      background: linear-gradient(135deg, #3a2a1a 0%, #1a1a1a 100%);
-    }
-
-    /* Hero color shift for pre-Cold War era */
-    .hero.era-precoldwar {
-      background:
-        linear-gradient(to top, #141414 0%, transparent 50%),
-        linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, transparent 60%),
-        linear-gradient(135deg, #2c1810 0%, #4a2c1a 50%, #1a1209 100%) !important;
-    }
-
-    .hero.era-precoldwar .hero-tag {
-      color: #d4a574;
-    }
-
-    .hero-tag {
-      transition: color 0.3s;
-    }
-
-    /* Country card variant for pre-Cold War era */
-    .country-card.era-precoldwar {
-      background: linear-gradient(135deg, #3a2810 0%, #1a1208 100%);
-      border-color: rgba(212, 165, 116, 0.3);
-    }
-
-    .country-card.era-precoldwar .country-badge {
-      background: #8B6F47;
-    }
-
-    /* Country cards */
-    .country-card {
-      flex: 0 0 280px;
-      height: 220px;
-      border-radius: 4px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.25s, box-shadow 0.25s;
-      background: linear-gradient(135deg, #2a0a0a 0%, #0a0a0a 100%);
-      border: 1px solid rgba(229, 9, 20, 0.3);
-    }
-
-    .country-card:hover {
-      transform: scale(1.05);
-    }
-
-    .card.demo-spotlight,
-    .country-card.demo-spotlight {
-      animation: demoSpotlight 1.2s ease forwards;
-      z-index: 8;
-    }
-
-    @keyframes demoSpotlight {
-      0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 rgba(229, 9, 20, 0);
-      }
-
-      45% {
-        transform: scale(1.08);
-        box-shadow: 0 18px 40px rgba(229, 9, 20, 0.38);
-      }
-
-      100% {
-        transform: scale(1.04);
-        box-shadow: 0 10px 26px rgba(229, 9, 20, 0.24);
-      }
-    }
-
-    .country-card-content {
-      padding: 20px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .country-card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .country-card-copy {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-    }
-
-    .country-card .country-name {
-      font-size: 24px;
-      font-weight: 900;
-    }
-
-    .country-card .country-reason {
-      font-size: 12px;
-      color: #ccc;
-      line-height: 1.4;
-    }
-
-    .country-card .country-badge {
-      display: inline-block;
-      background: #E50914;
-      color: #fff;
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 3px;
-      letter-spacing: 1px;
-      font-weight: 700;
-      align-self: flex-start;
-    }
-
-    .country-flag-block {
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .country-flag {
-      width: 82px;
-      aspect-ratio: 3 / 2;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: #0f0f0f;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
-    }
-
-    .country-flag-label {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #ddd;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .country-card.era-precoldwar .country-flag-label {
-      color: #e5c89c;
-    }
-
-    .modal-flag-slot {
-      margin-top: 18px;
-    }
-
-    .modal-flag-slot[hidden] {
-      display: none;
-    }
-
-    .modal-flag-block {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .modal-flag-image {
-      width: min(240px, 100%);
-      aspect-ratio: 3 / 2;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: #0f0f0f;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-    }
-
-    .modal-flag-label {
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #ccc;
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.85);
-      padding: 20px;
-      align-items: center;
-      justify-content: center;
-      overflow-y: auto;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.28s ease;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content {
-      background: #181818;
-      border-radius: 8px;
-      max-width: 1200px;
-      width: 100%;
-      max-height: 95vh;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-      opacity: 0;
-      transform: translateY(26px) scale(0.97);
-      transition: transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.24s ease;
-    }
-
-    .modal.visible .modal-content {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(0, 0, 0, 0.7);
-      border: none;
-      color: #fff;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 22px;
-      cursor: pointer;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close:hover {
-      background: rgba(0, 0, 0, 1);
-    }
-
-    .modal-header {
-      padding: 32px 48px 24px 48px;
-      background: linear-gradient(180deg, rgba(229, 9, 20, 0.15) 0%, transparent 100%);
-    }
-
-    .modal-tag {
-      color: #E50914;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .modal-header h2 {
-      font-size: 36px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .modal-meta {
-      color: #999;
-      font-size: 14px;
-      margin-bottom: 14px;
-    }
-
-    .modal-desc {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #d4d4d4;
-    }
-
-    .modal-body {
-      padding: 24px 48px 40px 48px;
-    }
-
-    .map-section h3 {
-      font-size: 20px;
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
-    .map-subtitle {
-      color: #999;
-      font-size: 13px;
-      margin-bottom: 18px;
-    }
-
-    #map-container {
-      background: #0a0a0a;
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 24px;
-    }
-
-    #map {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .country-path {
-      fill: #2a2a2a;
-      stroke: #141414;
-      stroke-width: 0.5;
-      transition: fill 0.2s;
-    }
-
-    .country-path.censored {
-      fill: #E50914;
-    }
-
-    .country-path.censored:hover {
-      fill: #ff1a25;
-      cursor: pointer;
-    }
-
-    .country-marker {
-      fill: #E50914;
-      stroke: #fff;
-      stroke-width: 1.5;
-      filter: drop-shadow(0 0 6px rgba(229, 9, 20, 0.6));
-    }
-
-    .country-marker:hover {
-      fill: #ff1a25;
-      cursor: pointer;
-    }
-
-    .map-legend {
-      display: flex;
-      gap: 18px;
-      margin-top: 14px;
-      font-size: 12px;
-      color: #ccc;
-      flex-wrap: wrap;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .legend-swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 2px;
-    }
-
-    .reasons-section h3 {
-      font-size: 20px;
-      margin-bottom: 16px;
-      font-weight: 700;
-    }
-
-    .reason-item {
-      background: #232323;
-      padding: 18px 22px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      border-left: 4px solid #E50914;
-    }
-
-    .reason-country {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .reason-year {
-      background: #E50914;
-      color: #fff;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 3px;
-      font-weight: 700;
-    }
-
-    .reason-text {
-      font-size: 14px;
-      color: #ccc;
-      line-height: 1.6;
-    }
-
-    /* Tooltip */
-    .tooltip {
-      position: absolute;
-      pointer-events: none;
-      background: rgba(0, 0, 0, 0.9);
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      opacity: 0;
-      transition: opacity 0.15s;
-      z-index: 1100;
-      white-space: nowrap;
-      border: 1px solid #E50914;
-    }
-
-    .tooltip.visible {
-      opacity: 1;
-    }
-
-    /* Footer */
-    footer {
-      padding: 40px 48px;
-      color: #666;
-      font-size: 12px;
-      text-align: center;
-      border-top: 1px solid #222;
-      margin-top: 40px;
-    }
-
-    /* Loading state for map */
-    .map-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 300px;
-      color: #666;
-      font-size: 14px;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      header {
-        padding: 14px 24px;
-      }
-
-      nav ul {
-        gap: 14px;
-        font-size: 13px;
-      }
-
-      .hero {
-        padding: 0 24px 80px 24px;
-      }
-
-      .hero h1 {
-        font-size: 38px;
-      }
-
-      .row {
-        padding: 20px 24px;
-      }
-
-      .modal-header,
-      .modal-body {
-        padding-left: 24px;
-        padding-right: 24px;
-      }
-
-      .modal-header h2 {
-        font-size: 28px;
-      }
-
-      .card {
-        flex: 0 0 180px;
-        height: 260px;
-      }
-
-      .card-title {
-        font-size: 17px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: 30px;
-      }
-
-      .hero p {
-        font-size: 15px;
-      }
-
-      nav {
-        display: none;
-      }
-
-      .card {
-        flex: 0 0 150px;
-        height: 220px;
-      }
-
-      .country-card {
-        flex: 0 0 240px;
-        height: 205px;
-      }
-
-      .country-card .country-name {
-        font-size: 20px;
-      }
-
-      .country-flag {
-        width: 68px;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STREAMFLIX — Modern World Project</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #141414; color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden; }
+  body { min-height: 100vh; }
+
+  /* Header */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0));
+    transition: background 0.3s;
+  }
+  header.scrolled { background: #141414; }
+  .logo {
+    color: #E50914; font-weight: 900; font-size: 28px; letter-spacing: -1px;
+  }
+  nav { display: flex; align-items: center; }
+  .era-toggle {
+    display: flex; gap: 4px; background: rgba(0,0,0,0.4);
+    border-radius: 999px; padding: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .era-tab {
+    background: transparent; border: none; color: #ccc;
+    padding: 8px 18px; border-radius: 999px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: inherit;
+  }
+  .era-tab:hover { color: #fff; }
+  .era-tab.active { background: #E50914; color: #fff; box-shadow: 0 2px 8px rgba(229,9,20,0.5); }
+  .era-tab.active[data-era="precoldwar"] { background: #8B6F47; box-shadow: 0 2px 8px rgba(139,111,71,0.6); }
+  nav ul { display: flex; gap: 22px; list-style: none; font-size: 14px; }
+  nav a { color: #e5e5e5; text-decoration: none; }
+  nav a:hover { color: #b3b3b3; }
+
+  /* Hero */
+  .hero {
+    height: 80vh; min-height: 480px;
+    position: relative;
+    background:
+      linear-gradient(to top, #141414 0%, transparent 50%),
+      linear-gradient(to right, rgba(0,0,0,0.85) 0%, transparent 60%),
+      linear-gradient(135deg, #1a1a2e 0%, #4a0e0e 50%, #1a1a1a 100%);
+    display: flex; align-items: flex-end;
+    padding: 0 48px 100px 48px;
+  }
+  .hero-content { max-width: 600px; }
+  .hero-tag {
+    display: inline-block; color: #E50914; font-weight: 700; font-size: 14px;
+    letter-spacing: 3px; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .hero h1 { font-size: 52px; font-weight: 900; line-height: 1.05; margin-bottom: 18px; }
+  .hero p { font-size: 17px; line-height: 1.5; color: #e5e5e5; margin-bottom: 24px; }
+  .hero-buttons { display: flex; gap: 12px; }
+  .btn {
+    border: none; padding: 12px 26px; border-radius: 4px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: #fff; color: #000; }
+  .btn-primary:hover { background: #e5e5e5; }
+  .btn-secondary { background: rgba(109,109,110,0.7); color: #fff; }
+  .btn-secondary:hover { background: rgba(109,109,110,0.4); }
+  .btn-demo {
+    background: linear-gradient(135deg, #E50914 0%, #b00610 100%);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 4px 14px rgba(229,9,20,0.4);
+    animation: demoPulse 2.5s ease-in-out infinite;
+  }
+  .btn-demo:hover {
+    background: linear-gradient(135deg, #ff1a25 0%, #d00712 100%);
+    box-shadow: 0 6px 20px rgba(229,9,20,0.6);
+  }
+  @keyframes demoPulse {
+    0%, 100% { box-shadow: 0 4px 14px rgba(229,9,20,0.4); }
+    50%      { box-shadow: 0 4px 22px rgba(229,9,20,0.75); }
+  }
+
+  /* Auto demo indicator + stop button while running */
+  .demo-indicator {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    background: rgba(229,9,20,0.95); color: #fff;
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; letter-spacing: 1px;
+    z-index: 2000; cursor: pointer;
+    display: none; align-items: center; gap: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    animation: demoPulse 2s ease-in-out infinite;
+  }
+  .demo-indicator.visible { display: inline-flex; }
+  .demo-indicator .dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: #fff; border-radius: 50%;
+    animation: blink 1s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+
+  /* Rows */
+  .row {
+    padding: 24px 48px;
+  }
+  .row h2 {
+    font-size: 22px; font-weight: 700; margin-bottom: 14px;
+  }
+  .row-subtitle {
+    font-size: 13px; color: #999; margin-bottom: 14px; margin-top: -10px;
+  }
+  .cards {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;
+    scrollbar-width: thin; scrollbar-color: #333 transparent;
+  }
+  .cards::-webkit-scrollbar { height: 8px; }
+  .cards::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+  .card {
+    flex: 0 0 240px; height: 340px; border-radius: 4px;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    background: #222;
+  }
+  .card:hover, .card:focus {
+    transform: scale(1.06); box-shadow: 0 12px 28px rgba(0,0,0,0.7);
+    z-index: 5;
+  }
+  .card-poster {
+    width: 100%; height: 100%; display: flex; flex-direction: column;
+    justify-content: space-between;
+    color: #fff; position: relative;
+  }
+  /* The real <img> for poster art — fills the card and crops nicely */
+  .poster-image {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;        /* fill the card, crop any overflow */
+    object-position: center;  /* center the image within the card */
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+  }
+  .poster-image.loaded { opacity: 1; }
+  /* When a background image is loaded, this overlay sits on top for text contrast */
+  .card-poster::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.92) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-poster.has-image::after {
+    /* When real image loads, suppress the icon */
+    content: ''; position: absolute; inset: 0;
+  }
+  .card-top {
+    position: relative; z-index: 2;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 14px 16px 0 16px;
+  }
+  .nflx-logo {
+    width: 22px; height: 22px; border-radius: 3px;
+    background: #E50914; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px; font-family: 'Arial Black', sans-serif;
+    line-height: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .card-icon {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 90px; opacity: 0.22;
+    filter: grayscale(0.2);
+    pointer-events: none;
+  }
+  .card-poster.has-image .card-icon { display: none; }
+  .card-bottom {
+    position: relative; z-index: 2;
+    padding: 0 16px 16px 16px;
+  }
+  .card-title {
+    font-size: 19px; font-weight: 900; line-height: 1.15;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+    letter-spacing: -0.2px;
+  }
+  .card-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 6px;
+    font-size: 11px; color: rgba(255,255,255,0.9);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+  .meta-pill {
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 1px 6px; border-radius: 2px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .card-badge {
+    background: #E50914; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 4px 8px; border-radius: 3px; letter-spacing: 1px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .card-badge.state-media { background: #8B6F47; }
+  .card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: flex-end; padding: 18px;
+  }
+  .card:hover .card-overlay { opacity: 1; }
+  .card-info {
+    font-size: 12px; color: #ccc;
+  }
+
+  /* Show themed gradients */
+  .poster-patriot { background: linear-gradient(135deg, #8B0000 0%, #1a0000 100%); }
+  .poster-temptation { background: linear-gradient(180deg, #2c1810 0%, #5a3a1a 50%, #1a0a05 100%); }
+  .poster-living-dead { background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 50%, #000 100%); }
+  .poster-fmj { background: linear-gradient(135deg, #2d3a1f 0%, #4a5a30 50%, #1a200f 100%); }
+  .poster-cooking { background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%); }
+  .poster-hangover { background: linear-gradient(135deg, #1a2d4a 0%, #0a1525 100%); }
+  .poster-designated { background: linear-gradient(135deg, #1a3a5a 0%, #0a1525 100%); }
+  .poster-bridge { background: linear-gradient(135deg, #4a2d1a 0%, #1a0f05 100%); }
+  .poster-legend { background: linear-gradient(135deg, #1a4a1a 0%, #5a2d00 100%); }
+  .poster-disjointed { background: linear-gradient(135deg, #5a3d1a 0%, #1a2d1a 100%); }
+  .poster-annapoorani { background: linear-gradient(135deg, #c2410c 0%, #4a1a00 100%); }
+  .poster-ic814 { background: linear-gradient(135deg, #0c2340 0%, #1a1a1a 100%); }
+  .poster-hasmukh { background: linear-gradient(135deg, #7a1a1a 0%, #1a0a0a 100%); }
+  .poster-if-only { background: linear-gradient(135deg, #4a1a5a 0%, #1a0a2a 100%); }
+  .poster-crown { background: linear-gradient(135deg, #2d1a5a 0%, #5a4a1a 50%, #1a0a2a 100%); }
+  .poster-cuties { background: linear-gradient(135deg, #6a1a4a 0%, #2a0a1a 100%); }
+
+  /* Pre-Cold War era poster themes — sepia, vintage, aged paper */
+  .poster-triumph { background: linear-gradient(135deg, #2a2a2a 0%, #5c1a1a 60%, #1a0a0a 100%); }
+  .poster-pravda { background: linear-gradient(135deg, #7a1a1a 0%, #2a0a0a 100%); }
+  .poster-cpi { background: linear-gradient(135deg, #1a2a4a 0%, #6a3a1a 50%, #1a1a1a 100%); }
+  .poster-hays { background: linear-gradient(135deg, #6b5435 0%, #3d2817 100%); }
+  .poster-luce { background: linear-gradient(135deg, #2d4a2a 0%, #1a2a15 100%); }
+  .poster-japan { background: linear-gradient(135deg, #6a1a1a 0%, #1a1a1a 50%, #2a0a0a 100%); }
+  .poster-moi { background: linear-gradient(135deg, #1a2d4a 0%, #6a1a1a 100%); }
+  .poster-sedition { background: linear-gradient(135deg, #2a2a4a 0%, #1a1015 100%); }
+  .poster-book-burning { background: linear-gradient(135deg, #4a2d1a 0%, #6a3a0a 50%, #1a0a05 100%); }
+  .poster-eternal-jew { background: linear-gradient(135deg, #3a2a1a 0%, #1a1a1a 100%); }
+
+  /* Hero color shift for pre-Cold War era */
+  .hero.era-precoldwar {
+    background:
+      linear-gradient(to top, #141414 0%, transparent 50%),
+      linear-gradient(to right, rgba(0,0,0,0.85) 0%, transparent 60%),
+      linear-gradient(135deg, #2c1810 0%, #4a2c1a 50%, #1a1209 100%) !important;
+  }
+  .hero.era-precoldwar .hero-tag { color: #d4a574; }
+  .hero-tag { transition: color 0.3s; }
+
+  /* Country card variant for pre-Cold War era */
+  .country-card.era-precoldwar {
+    background: linear-gradient(135deg, #3a2810 0%, #1a1208 100%);
+    border-color: rgba(212, 165, 116, 0.3);
+  }
+  .country-card.era-precoldwar .country-badge { background: #8B6F47; }
+
+  /* Country cards */
+  .country-card {
+    flex: 0 0 280px; height: 180px; border-radius: 4px;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    background: linear-gradient(135deg, #2a0a0a 0%, #0a0a0a 100%);
+    border: 1px solid rgba(229,9,20,0.3);
+  }
+  .country-card:hover { transform: scale(1.05); }
+  .country-card-content {
+    padding: 20px; height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .country-card .country-name { font-size: 24px; font-weight: 900; }
+  .country-card .country-reason { font-size: 12px; color: #ccc; line-height: 1.4; }
+  .country-card .country-badge {
+    display: inline-block; background: #E50914; color: #fff; font-size: 10px;
+    padding: 3px 8px; border-radius: 3px; letter-spacing: 1px; font-weight: 700;
+    align-self: flex-start;
+  }
+
+  /* Modal */
+  .modal {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.85); padding: 20px;
+    align-items: center; justify-content: center;
+    overflow-y: auto;
+  }
+  .modal.active { display: flex; }
+  .modal-content {
+    background: #181818; border-radius: 8px;
+    max-width: 1200px; width: 100%;
+    max-height: 95vh; overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+  }
+  .close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(0,0,0,0.7); border: none; color: #fff;
+    width: 40px; height: 40px; border-radius: 50%;
+    font-size: 22px; cursor: pointer; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .close:hover { background: rgba(0,0,0,1); }
+  .modal-header {
+    padding: 32px 48px 24px 48px;
+    background: linear-gradient(180deg, rgba(229,9,20,0.15) 0%, transparent 100%);
+  }
+  .modal-tag {
+    color: #E50914; font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .modal-header h2 { font-size: 36px; font-weight: 900; margin-bottom: 8px; }
+  .modal-meta { color: #999; font-size: 14px; margin-bottom: 14px; }
+  .modal-desc { font-size: 15px; line-height: 1.6; color: #d4d4d4; }
+  .modal-body { padding: 24px 48px 40px 48px; }
+  .map-section h3 {
+    font-size: 20px; margin-bottom: 6px; font-weight: 700;
+  }
+  .map-subtitle { color: #999; font-size: 13px; margin-bottom: 18px; }
+  #map-container {
+    background: #0a0a0a; border-radius: 6px; padding: 16px;
+    margin-bottom: 24px;
+  }
+  #map { width: 100%; height: auto; display: block; }
+  .country-path { fill: #2a2a2a; stroke: #141414; stroke-width: 0.5; transition: fill 0.2s; }
+  .country-path.censored { fill: #E50914; }
+  .country-path.censored:hover { fill: #ff1a25; cursor: pointer; }
+  .map-legend {
+    display: flex; gap: 18px; margin-top: 14px; font-size: 12px; color: #ccc;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+  .reasons-section h3 {
+    font-size: 20px; margin-bottom: 16px; font-weight: 700;
+  }
+  .reason-item {
+    background: #232323; padding: 18px 22px; border-radius: 6px;
+    margin-bottom: 12px;
+    border-left: 4px solid #E50914;
+  }
+  .reason-country {
+    font-size: 18px; font-weight: 700; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .reason-year {
+    background: #E50914; color: #fff; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; font-weight: 700;
+  }
+  .reason-text { font-size: 14px; color: #ccc; line-height: 1.6; }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute; pointer-events: none;
+    background: rgba(0,0,0,0.9); color: #fff; padding: 6px 10px;
+    border-radius: 4px; font-size: 12px; opacity: 0;
+    transition: opacity 0.15s; z-index: 1100; white-space: nowrap;
+    border: 1px solid #E50914;
+  }
+  .tooltip.visible { opacity: 1; }
+
+  /* Footer */
+  footer {
+    padding: 40px 48px; color: #666; font-size: 12px; text-align: center;
+    border-top: 1px solid #222; margin-top: 40px;
+  }
+
+  /* Loading state for map */
+  .map-loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 300px; color: #666; font-size: 14px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    header { padding: 14px 24px; }
+    nav ul { gap: 14px; font-size: 13px; }
+    .hero { padding: 0 24px 80px 24px; }
+    .hero h1 { font-size: 38px; }
+    .row { padding: 20px 24px; }
+    .modal-header, .modal-body { padding-left: 24px; padding-right: 24px; }
+    .modal-header h2 { font-size: 28px; }
+    .card { flex: 0 0 180px; height: 260px; }
+    .card-title { font-size: 17px; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 15px; }
+    nav { display: none; }
+    .card { flex: 0 0 150px; height: 220px; }
+  }
+</style>
 </head>
-
 <body>
 
-  <header id="header">
-    <div class="logo">STREAMFLIX - Joel Vo and Jaewon Shim</div>
-    <nav>
-      <button class="demo-toggle" id="auto-demo-toggle" type="button" aria-pressed="false"
-        onclick="toggleAutoDemo()">Auto Demo</button>
-      <div class="era-toggle" role="tablist" aria-label="Era">
-        <button class="era-tab active" data-era="modern" role="tab" aria-selected="true"
-          onclick="setEra('modern')">Modern</button>
-        <button class="era-tab" data-era="precoldwar" role="tab" aria-selected="false"
-          onclick="setEra('precoldwar')">Pre-Cold War</button>
-      </div>
-    </nav>
-  </header>
-
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <div class="hero-tag" id="hero-tag">★ Modern Era · Private Streaming</div>
-      <h1 id="hero-title">Who Decides What the World Watches?</h1>
-      <p id="hero-desc">Streaming services like Netflix shifted media power from governments to private corporations —
-        but governments still push back. Explore the shows that have been censored, removed, or blocked around the
-        world.</p>
-      <div class="hero-buttons">
-        <button class="btn btn-primary"
-          onclick="document.getElementById('content').scrollIntoView({behavior:'smooth'})">
-          <span id="hero-btn-1">▶ Browse Censored Content</span>
-        </button>
-        <button class="btn btn-secondary"
-          onclick="document.getElementById('unavailable').scrollIntoView({behavior:'smooth'})">
-          <span id="hero-btn-2">ⓘ Banned Countries</span>
-        </button>
-      </div>
+<header id="header">
+  <div class="logo">STREAMFLIX</div>
+  <nav>
+    <div class="era-toggle" role="tablist" aria-label="Era">
+      <button class="era-tab active" data-era="modern" role="tab" aria-selected="true" onclick="setEra('modern')">Modern</button>
+      <button class="era-tab" data-era="precoldwar" role="tab" aria-selected="false" onclick="setEra('precoldwar')">Pre-Cold War</button>
     </div>
-  </section>
+  </nav>
+</header>
 
-  <section class="row" id="content">
-    <h2 id="content-heading">Censored Around the World</h2>
-    <div class="row-subtitle" id="content-subtitle">Click a title to see where it's been blocked or removed and why
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-tag" id="hero-tag">★ Modern Era · Private Streaming</div>
+    <h1 id="hero-title">Who Decides What the World Watches?</h1>
+    <p id="hero-desc">Streaming services like Netflix shifted media power from governments to private corporations — but governments still push back. Explore the shows that have been censored, removed, or blocked around the world.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('content').scrollIntoView({behavior:'smooth'})">
+        <span id="hero-btn-1">▶ Browse Censored Content</span>
+      </button>
+      <button class="btn btn-secondary" onclick="document.getElementById('unavailable').scrollIntoView({behavior:'smooth'})">
+        <span id="hero-btn-2">ⓘ Banned Countries</span>
+      </button>
+      <button class="btn btn-demo" onclick="startAutoDemo()" title="Fullscreen auto-cycling demo for the museum exhibit">
+        ▶▶ Auto Demo
+      </button>
     </div>
-    <div class="cards" id="shows-row"></div>
-  </section>
+  </div>
+</section>
 
-  <section class="row" id="unavailable">
-    <h2 id="unavailable-heading">Countries Where Netflix Doesn't Stream</h2>
-    <div class="row-subtitle" id="unavailable-subtitle">Click for the political and legal reasons</div>
-    <div class="cards" id="countries-row"></div>
-  </section>
+<section class="row" id="content">
+  <h2 id="content-heading">Censored Around the World</h2>
+  <div class="row-subtitle" id="content-subtitle">Click a title to see where it's been blocked or removed and why</div>
+  <div class="cards" id="shows-row"></div>
+</section>
 
-  <footer>
-    Built for the Modern World Research &amp; Presentation Project.<br />
-    Modern censorship cases sourced from Netflix's published Environmental, Social and Governance (ESG) transparency
-    reports.<br />
-    Pre-Cold War cases drawn from documented academic and historical sources.<br />
-    Not affiliated with Netflix, Inc. This is an educational project.
-  </footer>
+<section class="row" id="unavailable">
+  <h2 id="unavailable-heading">Countries Where Netflix Doesn't Stream</h2>
+  <div class="row-subtitle" id="unavailable-subtitle">Click for the political and legal reasons</div>
+  <div class="cards" id="countries-row"></div>
+</section>
 
-  <!-- Modal -->
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <button class="close" onclick="closeModal()">✕</button>
-      <div class="modal-header">
-        <div class="modal-tag" id="modal-tag">★ Censored Title</div>
-        <h2 id="modal-title">Title</h2>
-        <div class="modal-meta" id="modal-meta">Year • Type</div>
-        <div class="modal-flag-slot" id="modal-flag-slot" hidden></div>
-        <p class="modal-desc" id="modal-desc">Description</p>
-      </div>
-      <div class="modal-body">
-        <div class="map-section">
-          <h3 id="map-heading">Where this is censored</h3>
-          <div class="map-subtitle" id="map-subtitle">Highlighted countries have requested or enforced removal of this
-            content.</div>
-          <div id="map-container">
-            <svg id="map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg"></svg>
-            <div class="map-legend">
-              <div class="legend-item">
-                <div class="legend-swatch" style="background:#E50914"></div> Censored / Blocked
-              </div>
-              <div class="legend-item">
-                <div class="legend-swatch" style="background:#2a2a2a"></div> Available
-              </div>
-            </div>
+<footer>
+  Built for the Modern World Research &amp; Presentation Project.<br/>
+  Modern censorship cases sourced from Netflix's published Environmental, Social and Governance (ESG) transparency reports.<br/>
+  Pre-Cold War cases drawn from documented academic and historical sources.<br/>
+  Not affiliated with Netflix, Inc. This is an educational project.
+</footer>
+
+<!-- Auto Demo running indicator (tap to stop) -->
+<div class="demo-indicator" id="demo-indicator" onclick="stopAutoDemo()">
+  <span class="dot"></span>
+  AUTO DEMO RUNNING · TAP TO STOP
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-tag" id="modal-tag">★ Censored Title</div>
+      <h2 id="modal-title">Title</h2>
+      <div class="modal-meta" id="modal-meta">Year • Type</div>
+      <p class="modal-desc" id="modal-desc">Description</p>
+    </div>
+    <div class="modal-body">
+      <div class="map-section">
+        <h3 id="map-heading">Where this is censored</h3>
+        <div class="map-subtitle" id="map-subtitle">Highlighted countries have requested or enforced removal of this content.</div>
+        <div id="map-container">
+          <svg id="map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="map-legend">
+            <div class="legend-item"><div class="legend-swatch" style="background:#E50914"></div> Censored / Blocked</div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#2a2a2a"></div> Available</div>
           </div>
         </div>
-        <div class="reasons-section">
-          <h3 id="reasons-heading">Why It Was Censored</h3>
-          <div id="reasons"></div>
-        </div>
+      </div>
+      <div class="reasons-section">
+        <h3 id="reasons-heading">Why It Was Censored</h3>
+        <div id="reasons"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="tooltip" id="tooltip"></div>
+<div class="tooltip" id="tooltip"></div>
 
-  <!-- D3 + topojson from CDN for world map rendering -->
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<!-- D3 + topojson from CDN for world map rendering -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 
-  <script>
-    // =============================================================
-    // 🖼️  POSTER IMAGES — Paste your image URLs here
-    // =============================================================
-    // To add a real poster image:
-    //   1. Find a poster online — Wikipedia, IMDB, Google Images all work
-    //   2. Right-click the image → "Copy image address" (NOT page address)
-    //   3. Paste the URL between the quotes for the matching show below
-    //   4. Save the file and reload the page in your browser
-    //
-    // If a URL is empty or fails to load, the card automatically falls back
-    // to the themed gradient + icon design — so it never breaks.
-    //
-    // TIP: To verify a URL works, paste it into a new browser tab. If it
-    // shows the image alone (not a webpage), it'll work here.
-    // =============================================================
+<script>
+// =============================================================
+// 🖼️  POSTER IMAGES — Paste your image URLs here
+// =============================================================
+// To add a real poster image:
+//   1. Find a poster online — Wikipedia, IMDB, Google Images all work
+//   2. Right-click the image → "Copy image address" (NOT page address)
+//   3. Paste the URL between the quotes for the matching show below
+//   4. Save the file and reload the page in your browser
+//
+// If a URL is empty or fails to load, the card automatically falls back
+// to the themed gradient + icon design — so it never breaks.
+//
+// TIP: To verify a URL works, paste it into a new browser tab. If it
+// shows the image alone (not a webpage), it'll work here.
+// =============================================================
 
-    const POSTER_URLS = {
-      'patriot-act': 'https://m.media-amazon.com/images/M/MV5BMGNiNGJkMWYtODQ2MC00NjViLWJjNzctNjZlMzI5Y2ZiNjM0XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg',
-      'last-temptation': 'https://scdn.nflximg.net/images/7476/2297476.jpg',
-      'night-living-dead': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPqPlZ_IKQqbJzFmpADmmUrLfvrnpvqsNgHQ&s',
-      'full-metal-jacket': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMUswyNmwGm30TjAZkNTrG3oyMXNbLZihSF4x-ixWyaw-3e5OeGMS3_pmHfJrKFnQuNwdyZA&s=10',
-      'cooking-on-high': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJCprPe2ggEIZ6x0X-bY3FkK35FrlaYfjs6QuhRSPgmqSZI-AeWs7BwtQoMT5EhaONopiFoQ&s=10',
-      'last-hangover': 'https://m.media-amazon.com/images/M/MV5BNTkzNDBiMzYtMzQwOC00OTNjLWIwMGQtNDIzMDFkNGQ1MmVlXkEyXkFqcGc@._V1_.jpg',
-      'designated-survivor': 'https://upload.wikimedia.org/wikipedia/en/7/7a/Designated_Survivor_60_Days_poster.jpg',
-      'the-bridge': 'https://m.media-amazon.com/images/I/51G9JrVb3BL._AC_UF894,1000_QL80_.jpg',
-      'legend-420': 'https://m.media-amazon.com/images/M/MV5BMjA3Nzk1NDQtZTJjYy00ZDRjLWE2ZTYtN2Q1MzZmYzcyYzY3XkEyXkFqcGc@._V1_.jpg',
-      'disjointed': 'https://m.media-amazon.com/images/M/MV5BMTU3ODU2MTk5MV5BMl5BanBnXkFtZTgwOTQ4Njk0NDM@._V1_.jpg',
-      'annapoorani': 'https://upload.wikimedia.org/wikipedia/en/6/64/Annapoorani_The_Goddess_of_Food.jpg',
-      'ic814': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCSPE0MHs6XjAqJzp-nZxF0IlfhxGemvJeyh9nUjljJCsO7CB-A-gl4b258V4qe6BFCwS9Gw&s=10',
-      'hasmukh': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvYJ_rCWoS6iTbKC05Me3GS365Amd_RiBi8byEuYheKkXKraK9t6hqRHCbuYAHzazV5ohT4A&s=10',
-      'if-only': 'https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p23017217_b_v13_ad.jpg',
-      'the-crown': 'https://m.media-amazon.com/images/M/MV5BODcyODZlZDMtZGE0Ni00NjBhLWJlYTAtZDdlNWY3MzkwMGVhXkEyXkFqcGc@._V1_.jpg',
-      'cuties': 'https://m.media-amazon.com/images/M/MV5BNjQ2ZjlmN2YtZDY2NS00N2VkLTkzNTEtOTljYjJkNzI5ZDcxXkEyXkFqcGc@._V1_.jpg',
+const POSTER_URLS = {
+  // ── Modern era ────────────────────────────────
+  'patriot-act':         '',
+  'last-temptation':     '',
+  'night-living-dead':   '',
+  'full-metal-jacket':   '',
+  'cooking-on-high':     '',
+  'last-hangover':       '',
+  'designated-survivor': '',
+  'the-bridge':          '',
+  'legend-420':          '',
+  'disjointed':          '',
+  'annapoorani':         '',
+  'ic814':               '',
+  'hasmukh':             '',
+  'if-only':             '',
+  'the-crown':           '',
+  'cuties':              '',
+  // ── Pre-Cold War era ──────────────────────────
+  'triumph-will':        '',
+  'pravda':              '',
+  'cpi-creel':           '',
+  'hays-code':           '',
+  'istituto-luce':       '',
+  'japan-domei':         '',
+  'british-moi':         '',
+  'sedition-act':        '',
+  'book-burnings':       '',
+};
 
-      // ── Pre-Cold War era ──────────────────────────
-      'triumph-will': 'https://m.media-amazon.com/images/M/MV5BMjE1MzE2Mzg1NV5BMl5BanBnXkFtZTgwOTUzOTA2MjE@._V1_FMjpg_UX1000_.jpg',
-      'pravda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/%D0%9F%D0%A0%D0%90%D0%92%D0%94%D0%90%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5%D1%81%D1%82%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0.jpg/250px-%D0%9F%D0%A0%D0%90%D0%92%D0%94%D0%90%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5%D1%81%D1%82%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0.jpg',
-      'cpi-creel': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Liberty_Loan_pictorial_news%2C_first_aid_in_the_front_lines_MET_DP876892.jpg',
-      'hays-code': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Thou_Shalt_Not_-_Whitey_Schafer_-_1940.jpg/250px-Thou_Shalt_Not_-_Whitey_Schafer_-_1940.jpg',
-      'istituto-luce': 'https://upload.wikimedia.org/wikipedia/commons/2/27/Istituto_Luce_logo_storico.svg',
-      'japan-domei': 'https://www.chosakai.gr.jp/wp/wp-content/themes/shinbun/asset/img/en/overview/overview_en_contents_img02.jpg',
-      'british-moi': 'https://inews.co.uk/wp-content/uploads/2016/11/T00046-44-Read-Only-300x456.jpg',
-      'sedition-act': 'https://www.loc.gov/static/exhibitions/world-war-i-american-experiences/images/objects/over-here/wwi0092-tif-standard.jpg',
-      'book-burnings': 'https://nebraskaexaminer.com/wp-content/uploads/2023/06/GettyImages-111284381.jpg',
-    };
+// =============================================================
+// DATA — Real Netflix censorship cases from their transparency reports
+// =============================================================
 
-    const COUNTRY_FLAGS = {
-      china: {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20China.svg',
-        alt: 'Flag of China',
-        label: 'Modern Flag'
-      },
-      'north-korea': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20North%20Korea.svg',
-        alt: 'Flag of North Korea',
-        label: 'Modern Flag'
-      },
-      russia: {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Russia.svg',
-        alt: 'Flag of Russia',
-        label: 'Modern Flag'
-      },
-      syria: {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Syria%20(2025-).svg',
-        alt: 'Flag of Syria',
-        label: 'Modern Flag'
-      },
-      crimea: {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Crimea.svg',
-        alt: 'Flag of Crimea',
-        label: 'Regional Flag'
-      },
-      iran: {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Iran%20(official).svg',
-        alt: 'Flag of Iran',
-        label: 'Modern Flag'
-      },
-      'nazi-germany': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Germany%20(1935%E2%80%931945).svg',
-        alt: 'Flag of Nazi Germany (1935-1945)',
-        label: 'Historical Flag'
-      },
-      'soviet-union': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20the%20Soviet%20Union.svg',
-        alt: 'Flag of the Soviet Union',
-        label: 'Historical Flag'
-      },
-      'fascist-italy': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Italy%20(1861%E2%80%931946).svg',
-        alt: 'Flag of the Kingdom of Italy (used during the Fascist era)',
-        label: 'Historical Flag'
-      },
-      'imperial-japan': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Japan%20(1870%E2%80%931999).svg',
-        alt: 'Flag of Imperial Japan',
-        label: 'Historical Flag'
-      },
-      'francoist-spain': {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Spain%20(1945%E2%80%931977).svg',
-        alt: 'Flag of Francoist Spain',
-        label: 'Historical Flag'
-      }
-    };
+const shows = [
+  {
+    id: 'patriot-act',
+    icon: '🎙️',
+    title: 'Patriot Act with Hasan Minhaj',
+    year: '2018 — 2020',
+    type: 'Comedy / Political Talk Show',
+    posterClass: 'poster-patriot',
+    description: 'Hasan Minhaj breaks down political and cultural issues with sharp comedy and original reporting. Episode 2 ("Saudi Arabia") was removed from Netflix in Saudi Arabia in 2019 after the kingdom invoked Article 6 of its Anti-Cybercrime Law.',
+    censored: [
+      { country: 'Saudi Arabia', iso: '682', year: '2019', reason: 'Netflix removed Episode 2, "Saudi Arabia," after a legal demand from the Saudi government. The episode criticized Crown Prince Mohammed bin Salman regarding the murder of journalist Jamal Khashoggi and the war in Yemen. Netflix said the episode remained available on YouTube and outside Saudi Arabia.' }
+    ]
+  },
+  {
+    id: 'last-temptation',
+    icon: '✝️',
+    title: 'The Last Temptation of Christ',
+    year: '1988',
+    type: 'Film / Drama',
+    posterClass: 'poster-temptation',
+    description: 'Martin Scorsese\'s controversial adaptation of the Nikos Kazantzakis novel. The film has been the subject of religious controversy and government censorship in multiple countries since its release.',
+    censored: [
+      { country: 'Singapore', iso: '702', year: '2019', reason: 'Removed from Netflix in Singapore at the request of the Infocomm Media Development Authority (IMDA). The film has been banned in Singapore for religious sensitivity, as content depicting Jesus in unorthodox ways is restricted under local media laws.' },
+      { country: 'Philippines', iso: '608', year: 'Historic ban', reason: 'Long-standing restrictions on the film in the Philippines due to religious objections from the Catholic Church and government censorship bodies.' }
+    ]
+  },
+  {
+    id: 'night-living-dead',
+    icon: '🧟',
+    title: 'Night of the Living Dead',
+    year: '1968',
+    type: 'Film / Horror',
+    posterClass: 'poster-living-dead',
+    description: 'George A. Romero\'s landmark horror film that launched the modern zombie genre. Despite its cultural significance, the film has been classified as harmful to minors in Germany since 1984.',
+    censored: [
+      { country: 'Germany', iso: '276', year: '2017', reason: 'Removed from Netflix in Germany after a written demand citing the film\'s inclusion on the BPjM Index (Federal Department for Media Harmful to Young Persons) since 1984. The film is considered to glorify violence under German youth-protection law and cannot be openly displayed or sold to minors.' }
+    ]
+  },
+  {
+    id: 'full-metal-jacket',
+    icon: '⛑️',
+    title: 'Full Metal Jacket',
+    year: '1987',
+    type: 'Film / War Drama',
+    posterClass: 'poster-fmj',
+    description: 'Stanley Kubrick\'s two-part Vietnam War film, divided between Marine Corps boot camp and the Battle of Hu\u1ebf. The film was removed from Netflix in Vietnam after a government request.',
+    censored: [
+      { country: 'Vietnam', iso: '704', year: '2017', reason: 'Removed from Netflix in Vietnam at the request of the Ministry of Information and Communications. Vietnamese authorities cited the film\'s portrayal of the Vietnam War and its depiction of Vietnamese characters as the reason for the takedown.' }
+    ]
+  },
+  {
+    id: 'cooking-on-high',
+    icon: '🌿',
+    title: 'Cooking on High',
+    year: '2018',
+    type: 'Reality Cooking',
+    posterClass: 'poster-cooking',
+    description: 'A competitive cooking show featuring chefs creating cannabis-infused dishes. The show, along with two other cannabis-related Netflix titles, was pulled from Singapore\'s catalog.',
+    censored: [
+      { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore alongside "The Legend of 420" and "Disjointed" at the request of the Infocomm Media Development Authority. Singapore enforces strict zero-tolerance drug laws and prohibits media that depicts illegal drug use favorably.' }
+    ]
+  },
+  {
+    id: 'last-hangover',
+    icon: '🍷',
+    title: 'The Last Hangover',
+    year: '2018',
+    type: 'Film / Comedy',
+    posterClass: 'poster-hangover',
+    description: 'A Brazilian comedy special by the group Porta dos Fundos that reimagines the disciples discovering Jesus is missing the morning after the Last Supper. The film provoked global controversy over its depiction of Christ.',
+    censored: [
+      { country: 'Singapore', iso: '702', year: '2019', reason: 'Removed in Singapore by Netflix at the request of the IMDA on grounds of religious sensitivity. Singapore\'s media regulations restrict content perceived as offensive to religious communities.' }
+    ]
+  },
+  {
+    id: 'designated-survivor',
+    icon: '🏛️',
+    title: 'Designated Survivor: 60 Days',
+    year: '2019',
+    type: 'Political Drama Series',
+    posterClass: 'poster-designated',
+    description: 'A Korean adaptation of the U.S. political thriller. The series follows the Minister of Environment who unexpectedly becomes acting president after an attack on the National Assembly.',
+    censored: [
+      { country: 'Saudi Arabia', iso: '682', year: '2020', reason: 'Removed in Saudi Arabia after a legal demand citing the country\'s Anti-Cybercrime Law. The episode reportedly contained content the Saudi government deemed objectionable. Listed in Netflix\'s ESG transparency report alongside other Saudi takedown requests.' }
+    ]
+  },
+  {
+    id: 'the-bridge',
+    icon: '🕊️',
+    title: 'The Bridge (Christchurch documentary)',
+    year: '2020',
+    type: 'Documentary',
+    posterClass: 'poster-bridge',
+    description: 'A documentary touching on the Christchurch mosque shootings. Netflix received a removal request from New Zealand authorities citing the country\'s classification of the shooter\'s manifesto as objectionable material.',
+    censored: [
+      { country: 'New Zealand', iso: '554', year: '2020', reason: 'Netflix received a New Zealand government request to remove the title after authorities classified content related to the Christchurch shooter\'s manifesto as "objectionable" under the Films, Videos, and Publications Classification Act. Possession or distribution of the manifesto is illegal in New Zealand.' }
+    ]
+  },
+  {
+    id: 'legend-420',
+    icon: '🌱',
+    title: 'The Legend of 420',
+    year: '2017',
+    type: 'Documentary',
+    posterClass: 'poster-legend',
+    description: 'A documentary exploring the science, business, and culture of cannabis legalization in the United States. Removed in Singapore as part of a wider Netflix takedown of drug-themed content.',
+    censored: [
+      { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore at the request of the Infocomm Media Development Authority (IMDA). The documentary\'s favorable portrayal of cannabis use conflicts with Singapore\'s strict anti-drug laws, which include mandatory minimum sentences and the death penalty for trafficking.' }
+    ]
+  },
+  {
+    id: 'disjointed',
+    icon: '🍃',
+    title: 'Disjointed',
+    year: '2017',
+    type: 'Sitcom',
+    posterClass: 'poster-disjointed',
+    description: 'A Chuck Lorre comedy series starring Kathy Bates as a lifelong marijuana legalization advocate running a Los Angeles dispensary. Removed from Netflix in Singapore for promoting drug culture.',
+    censored: [
+      { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore at the request of the IMDA on grounds that the show promotes cannabis use. Singapore enforces some of the world\'s strictest drug laws under the Misuse of Drugs Act, and media depicting drug use sympathetically is prohibited.' }
+    ]
+  },
+  {
+    id: 'annapoorani',
+    icon: '🍳',
+    title: 'Annapoorani',
+    year: '2023',
+    type: 'Film / Tamil Drama',
+    posterClass: 'poster-annapoorani',
+    description: 'A Tamil-language film starring Nayanthara as a young Brahmin woman who dreams of becoming a chef and prepares meat dishes. The film became one of the most high-profile content removals in Netflix India\'s history.',
+    censored: [
+      { country: 'India', iso: '356', year: '2024', reason: 'Removed from Netflix India in January 2024 after Hindu groups including the Hindu Janajagruti Samiti filed police complaints alleging the film hurt religious sentiments and promoted "love jihad." The film\'s producers, Zee Studios, issued a public apology. The case illustrates how non-state actors can pressure private streamers into censorship.' }
+    ]
+  },
+  {
+    id: 'ic814',
+    icon: '✈️',
+    title: 'IC 814: The Kandahar Hijack',
+    year: '2024',
+    type: 'Limited Series',
+    posterClass: 'poster-ic814',
+    description: 'A drama series based on the 1999 hijacking of Indian Airlines Flight 814. After release, the show generated political controversy in India over its portrayal of the hijackers\' identities.',
+    censored: [
+      { country: 'India', iso: '356', year: '2024', reason: 'Following its September 2024 release, India\'s Ministry of Information and Broadcasting summoned Netflix\u2019s India content head over allegations that the hijackers were given Hindu code names that obscured their Muslim identity. Netflix added a disclaimer clarifying the real names of the hijackers. The show was not removed, but the modification under government pressure illustrates the negotiated middle ground between private streamers and state authority.' }
+    ]
+  },
+  {
+    id: 'hasmukh',
+    icon: '🎭',
+    title: 'Hasmukh',
+    year: '2020',
+    type: 'Dark Comedy Series',
+    posterClass: 'poster-hasmukh',
+    description: 'An Indian dark comedy about a small-town comedian who can only deliver brilliant stand-up after committing murder. The show prompted legal action from a profession the show ridiculed.',
+    censored: [
+      { country: 'India', iso: '356', year: '2020', reason: 'After release, the Bar Council of India and individual lawyers filed multiple First Information Reports (FIRs) and legal petitions against Netflix and the show\'s creators, demanding removal over allegedly defamatory jokes about the legal profession. The Delhi High Court declined to order takedown, but Netflix removed the disputed monologue in some versions. This case became a key precedent in Indian streaming-content law.' }
+    ]
+  },
+  {
+    id: 'if-only',
+    icon: '💔',
+    title: 'If Only',
+    year: '2020',
+    type: 'Romance Series (Cancelled)',
+    posterClass: 'poster-if-only',
+    description: 'A planned Turkish-language Netflix original series. Production was cancelled entirely after the Turkish broadcasting regulator demanded changes related to a gay character in the script.',
+    censored: [
+      { country: 'Turkey', iso: '792', year: '2020', reason: 'Turkey\'s Radio and Television Supreme Council (RTÜK) refused to grant a filming license unless the script removed a gay character. Netflix cancelled production rather than comply. The case followed Turkey\'s 2019 law requiring all online streaming services to register with RTÜK, giving the government regulatory authority over Netflix content nationwide.' }
+    ]
+  },
+  {
+    id: 'the-crown',
+    icon: '👑',
+    title: 'The Crown',
+    year: '2016 — 2023',
+    type: 'Royal Drama Series',
+    posterClass: 'poster-crown',
+    description: 'A lavish dramatization of Queen Elizabeth II\'s reign. Multiple seasons drew official complaints from British politicians and former royal officials demanding fictional disclaimers.',
+    censored: [
+      { country: 'United Kingdom', iso: '826', year: '2022', reason: 'Ahead of Season 5, UK Culture Secretary calls and a public campaign led by former PM John Major and Dame Judi Dench pressured Netflix to add a "fictional dramatization" disclaimer. Netflix initially refused, then added a disclaimer to the trailer and series description. The episode "The Way Ahead," depicting Prince Charles allegedly lobbying for the Queen\'s abdication, was the focal point of complaints.' }
+    ]
+  },
+  {
+    id: 'cuties',
+    icon: '💃',
+    title: 'Cuties (Mignonnes)',
+    year: '2020',
+    type: 'French Film',
+    posterClass: 'poster-cuties',
+    description: 'A French coming-of-age film about an 11-year-old girl joining a hip-hop dance group. Netflix\'s marketing of the film triggered international backlash and government action across multiple jurisdictions.',
+    censored: [
+      { country: 'Turkey', iso: '792', year: '2020', reason: 'RTÜK ordered Netflix to remove the film from its Turkish catalog, citing child protection concerns. Netflix complied within days of the order.' },
+      { country: 'United States (Texas)', iso: '840', year: '2020', reason: 'A Texas grand jury in Tyler County indicted Netflix on criminal charges of promoting lewd visual material depicting a child. The charges were eventually dismissed in 2022, but the case marked a rare U.S. criminal prosecution of a streaming service over content.' }
+    ]
+  }
+];
 
-    function getCountryFlag(id) {
-      return COUNTRY_FLAGS[id] || null;
-    }
+const unavailableCountries = [
+  {
+    id: 'china',
+    name: 'China',
+    iso: '156',
+    badge: 'Never Launched',
+    description: 'Netflix has never operated in mainland China. The Chinese government heavily regulates foreign streaming services through the National Radio and Television Administration. Netflix CEO Reed Hastings stated in 2016 that entering China was "off the table" for the foreseeable future. Chinese viewers must use VPNs to access the service.'
+  },
+  {
+    id: 'north-korea',
+    name: 'North Korea',
+    iso: '408',
+    badge: 'Blocked',
+    description: 'The North Korean government tightly controls all internet access, and Netflix is unavailable to its citizens. The country operates a closed intranet system, and access to outside media is criminalized. State media has occasionally criticized Netflix content, including "Squid Game," as evidence of South Korean and Western moral decay.'
+  },
+  {
+    id: 'russia',
+    name: 'Russia',
+    iso: '643',
+    badge: 'Suspended 2022',
+    description: 'Netflix suspended its service in Russia in March 2022 in response to the Russian invasion of Ukraine. The company also refused to comply with a new Russian law requiring streaming services to carry 20 Russian state-controlled propaganda channels. Subscriptions were halted and the service became inaccessible.'
+  },
+  {
+    id: 'syria',
+    name: 'Syria',
+    iso: '760',
+    badge: 'U.S. Sanctions',
+    description: 'Netflix is unavailable in Syria due to United States economic sanctions that prohibit U.S. companies from operating there. The restrictions stem from the U.S. Treasury\'s Office of Foreign Assets Control (OFAC) designations against the Syrian government.'
+  },
+  {
+    id: 'crimea',
+    name: 'Crimea',
+    iso: '643-crimea',
+    badge: 'U.S. Sanctions',
+    description: 'Netflix is unavailable in Russian-occupied Crimea due to U.S. sanctions imposed after Russia\'s annexation of the territory in 2014. OFAC restrictions prohibit American companies from providing services in the region.'
+  },
+  {
+    id: 'iran',
+    name: 'Iran',
+    iso: '364',
+    badge: 'U.S. Sanctions',
+    description: 'Netflix does not officially operate in Iran due to long-standing U.S. economic sanctions against the Iranian government. The U.S. Treasury\'s OFAC sanctions prohibit American companies from providing services in Iran. Despite this, Iranian viewers reportedly access the platform widely through VPNs, which the Iranian government has periodically attempted to block.'
+  }
+];
 
-    // =============================================================
-    // DATA — Real Netflix censorship cases from their transparency reports
-    // =============================================================
+// =============================================================
+// PRE-COLD WAR DATA — Government propaganda & press censorship (pre-1947)
+// =============================================================
 
-    const shows = [
-      {
-        id: 'patriot-act',
-        icon: '🎙️',
-        title: 'Patriot Act with Hasan Minhaj',
-        year: '2018 — 2020',
-        type: 'Comedy / Political Talk Show',
-        posterClass: 'poster-patriot',
-        description: 'Hasan Minhaj breaks down political and cultural issues with sharp comedy and original reporting. Episode 2 ("Saudi Arabia") was removed from Netflix in Saudi Arabia in 2019 after the kingdom invoked Article 6 of its Anti-Cybercrime Law.',
-        censored: [
-          { country: 'Saudi Arabia', iso: '682', year: '2019', reason: 'Netflix removed Episode 2, "Saudi Arabia," after a legal demand from the Saudi government. The episode criticized Crown Prince Mohammed bin Salman regarding the murder of journalist Jamal Khashoggi and the war in Yemen. Netflix said the episode remained available on YouTube and outside Saudi Arabia.' }
-        ]
-      },
-      {
-        id: 'last-temptation',
-        icon: '✝️',
-        title: 'The Last Temptation of Christ',
-        year: '1988',
-        type: 'Film / Drama',
-        posterClass: 'poster-temptation',
-        description: 'Martin Scorsese\'s controversial adaptation of the Nikos Kazantzakis novel. The film has been the subject of religious controversy and government censorship in multiple countries since its release.',
-        censored: [
-          { country: 'Singapore', iso: '702', year: '2019', reason: 'Removed from Netflix in Singapore at the request of the Infocomm Media Development Authority (IMDA). The film has been banned in Singapore for religious sensitivity, as content depicting Jesus in unorthodox ways is restricted under local media laws.' },
-          { country: 'Philippines', iso: '608', year: 'Historic ban', reason: 'Long-standing restrictions on the film in the Philippines due to religious objections from the Catholic Church and government censorship bodies.' }
-        ]
-      },
-      {
-        id: 'night-living-dead',
-        icon: '🧟',
-        title: 'Night of the Living Dead',
-        year: '1968',
-        type: 'Film / Horror',
-        posterClass: 'poster-living-dead',
-        description: 'George A. Romero\'s landmark horror film that launched the modern zombie genre. Despite its cultural significance, the film has been classified as harmful to minors in Germany since 1984.',
-        censored: [
-          { country: 'Germany', iso: '276', year: '2017', reason: 'Removed from Netflix in Germany after a written demand citing the film\'s inclusion on the BPjM Index (Federal Department for Media Harmful to Young Persons) since 1984. The film is considered to glorify violence under German youth-protection law and cannot be openly displayed or sold to minors.' }
-        ]
-      },
-      {
-        id: 'full-metal-jacket',
-        icon: '⛑️',
-        title: 'Full Metal Jacket',
-        year: '1987',
-        type: 'Film / War Drama',
-        posterClass: 'poster-fmj',
-        description: 'Stanley Kubrick\'s two-part Vietnam War film, divided between Marine Corps boot camp and the Battle of Hu\u1ebf. The film was removed from Netflix in Vietnam after a government request.',
-        censored: [
-          { country: 'Vietnam', iso: '704', year: '2017', reason: 'Removed from Netflix in Vietnam at the request of the Ministry of Information and Communications. Vietnamese authorities cited the film\'s portrayal of the Vietnam War and its depiction of Vietnamese characters as the reason for the takedown.' }
-        ]
-      },
-      {
-        id: 'cooking-on-high',
-        icon: '🌿',
-        title: 'Cooking on High',
-        year: '2018',
-        type: 'Reality Cooking',
-        posterClass: 'poster-cooking',
-        description: 'A competitive cooking show featuring chefs creating cannabis-infused dishes. The show, along with two other cannabis-related Netflix titles, was pulled from Singapore\'s catalog.',
-        censored: [
-          { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore alongside "The Legend of 420" and "Disjointed" at the request of the Infocomm Media Development Authority. Singapore enforces strict zero-tolerance drug laws and prohibits media that depicts illegal drug use favorably.' }
-        ]
-      },
-      {
-        id: 'last-hangover',
-        icon: '🍷',
-        title: 'The Last Hangover',
-        year: '2018',
-        type: 'Film / Comedy',
-        posterClass: 'poster-hangover',
-        description: 'A Brazilian comedy special by the group Porta dos Fundos that reimagines the disciples discovering Jesus is missing the morning after the Last Supper. The film provoked global controversy over its depiction of Christ.',
-        censored: [
-          { country: 'Singapore', iso: '702', year: '2019', reason: 'Removed in Singapore by Netflix at the request of the IMDA on grounds of religious sensitivity. Singapore\'s media regulations restrict content perceived as offensive to religious communities.' }
-        ]
-      },
-      {
-        id: 'designated-survivor',
-        icon: '🏛️',
-        title: 'Designated Survivor: 60 Days',
-        year: '2019',
-        type: 'Political Drama Series',
-        posterClass: 'poster-designated',
-        description: 'A Korean adaptation of the U.S. political thriller. The series follows the Minister of Environment who unexpectedly becomes acting president after an attack on the National Assembly.',
-        censored: [
-          { country: 'Saudi Arabia', iso: '682', year: '2020', reason: 'Removed in Saudi Arabia after a legal demand citing the country\'s Anti-Cybercrime Law. The episode reportedly contained content the Saudi government deemed objectionable. Listed in Netflix\'s ESG transparency report alongside other Saudi takedown requests.' }
-        ]
-      },
-      {
-        id: 'the-bridge',
-        icon: '🕊️',
-        title: 'The Bridge (Christchurch documentary)',
-        year: '2020',
-        type: 'Documentary',
-        posterClass: 'poster-bridge',
-        description: 'A documentary touching on the Christchurch mosque shootings. Netflix received a removal request from New Zealand authorities citing the country\'s classification of the shooter\'s manifesto as objectionable material.',
-        censored: [
-          { country: 'New Zealand', iso: '554', year: '2020', reason: 'Netflix received a New Zealand government request to remove the title after authorities classified content related to the Christchurch shooter\'s manifesto as "objectionable" under the Films, Videos, and Publications Classification Act. Possession or distribution of the manifesto is illegal in New Zealand.' }
-        ]
-      },
-      {
-        id: 'legend-420',
-        icon: '🌱',
-        title: 'The Legend of 420',
-        year: '2017',
-        type: 'Documentary',
-        posterClass: 'poster-legend',
-        description: 'A documentary exploring the science, business, and culture of cannabis legalization in the United States. Removed in Singapore as part of a wider Netflix takedown of drug-themed content.',
-        censored: [
-          { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore at the request of the Infocomm Media Development Authority (IMDA). The documentary\'s favorable portrayal of cannabis use conflicts with Singapore\'s strict anti-drug laws, which include mandatory minimum sentences and the death penalty for trafficking.' }
-        ]
-      },
-      {
-        id: 'disjointed',
-        icon: '🍃',
-        title: 'Disjointed',
-        year: '2017',
-        type: 'Sitcom',
-        posterClass: 'poster-disjointed',
-        description: 'A Chuck Lorre comedy series starring Kathy Bates as a lifelong marijuana legalization advocate running a Los Angeles dispensary. Removed from Netflix in Singapore for promoting drug culture.',
-        censored: [
-          { country: 'Singapore', iso: '702', year: '2018', reason: 'Removed in Singapore at the request of the IMDA on grounds that the show promotes cannabis use. Singapore enforces some of the world\'s strictest drug laws under the Misuse of Drugs Act, and media depicting drug use sympathetically is prohibited.' }
-        ]
-      },
-      {
-        id: 'annapoorani',
-        icon: '🍳',
-        title: 'Annapoorani',
-        year: '2023',
-        type: 'Film / Tamil Drama',
-        posterClass: 'poster-annapoorani',
-        description: 'A Tamil-language film starring Nayanthara as a young Brahmin woman who dreams of becoming a chef and prepares meat dishes. The film became one of the most high-profile content removals in Netflix India\'s history.',
-        censored: [
-          { country: 'India', iso: '356', year: '2024', reason: 'Removed from Netflix India in January 2024 after Hindu groups including the Hindu Janajagruti Samiti filed police complaints alleging the film hurt religious sentiments and promoted "love jihad." The film\'s producers, Zee Studios, issued a public apology. The case illustrates how non-state actors can pressure private streamers into censorship.' }
-        ]
-      },
-      {
-        id: 'ic814',
-        icon: '✈️',
-        title: 'IC 814: The Kandahar Hijack',
-        year: '2024',
-        type: 'Limited Series',
-        posterClass: 'poster-ic814',
-        description: 'A drama series based on the 1999 hijacking of Indian Airlines Flight 814. After release, the show generated political controversy in India over its portrayal of the hijackers\' identities.',
-        censored: [
-          { country: 'India', iso: '356', year: '2024', reason: 'Following its September 2024 release, India\'s Ministry of Information and Broadcasting summoned Netflix\u2019s India content head over allegations that the hijackers were given Hindu code names that obscured their Muslim identity. Netflix added a disclaimer clarifying the real names of the hijackers. The show was not removed, but the modification under government pressure illustrates the negotiated middle ground between private streamers and state authority.' }
-        ]
-      },
-      {
-        id: 'hasmukh',
-        icon: '🎭',
-        title: 'Hasmukh',
-        year: '2020',
-        type: 'Dark Comedy Series',
-        posterClass: 'poster-hasmukh',
-        description: 'An Indian dark comedy about a small-town comedian who can only deliver brilliant stand-up after committing murder. The show prompted legal action from a profession the show ridiculed.',
-        censored: [
-          { country: 'India', iso: '356', year: '2020', reason: 'After release, the Bar Council of India and individual lawyers filed multiple First Information Reports (FIRs) and legal petitions against Netflix and the show\'s creators, demanding removal over allegedly defamatory jokes about the legal profession. The Delhi High Court declined to order takedown, but Netflix removed the disputed monologue in some versions. This case became a key precedent in Indian streaming-content law.' }
-        ]
-      },
-      {
-        id: 'if-only',
-        icon: '💔',
-        title: 'If Only',
-        year: '2020',
-        type: 'Romance Series (Cancelled)',
-        posterClass: 'poster-if-only',
-        description: 'A planned Turkish-language Netflix original series. Production was cancelled entirely after the Turkish broadcasting regulator demanded changes related to a gay character in the script.',
-        censored: [
-          { country: 'Turkey', iso: '792', year: '2020', reason: 'Turkey\'s Radio and Television Supreme Council (RTÜK) refused to grant a filming license unless the script removed a gay character. Netflix cancelled production rather than comply. The case followed Turkey\'s 2019 law requiring all online streaming services to register with RTÜK, giving the government regulatory authority over Netflix content nationwide.' }
-        ]
-      },
-      {
-        id: 'the-crown',
-        icon: '👑',
-        title: 'The Crown',
-        year: '2016 — 2023',
-        type: 'Royal Drama Series',
-        posterClass: 'poster-crown',
-        description: 'A lavish dramatization of Queen Elizabeth II\'s reign. Multiple seasons drew official complaints from British politicians and former royal officials demanding fictional disclaimers.',
-        censored: [
-          { country: 'United Kingdom', iso: '826', year: '2022', reason: 'Ahead of Season 5, UK Culture Secretary calls and a public campaign led by former PM John Major and Dame Judi Dench pressured Netflix to add a "fictional dramatization" disclaimer. Netflix initially refused, then added a disclaimer to the trailer and series description. The episode "The Way Ahead," depicting Prince Charles allegedly lobbying for the Queen\'s abdication, was the focal point of complaints.' }
-        ]
-      },
-      {
-        id: 'cuties',
-        icon: '💃',
-        title: 'Cuties (Mignonnes)',
-        year: '2020',
-        type: 'French Film',
-        posterClass: 'poster-cuties',
-        description: 'A French coming-of-age film about an 11-year-old girl joining a hip-hop dance group. Netflix\'s marketing of the film triggered international backlash and government action across multiple jurisdictions.',
-        censored: [
-          { country: 'Turkey', iso: '792', year: '2020', reason: 'RTÜK ordered Netflix to remove the film from its Turkish catalog, citing child protection concerns. Netflix complied within days of the order.' },
-          { country: 'United States (Texas)', iso: '840', year: '2020', reason: 'A Texas grand jury in Tyler County indicted Netflix on criminal charges of promoting lewd visual material depicting a child. The charges were eventually dismissed in 2022, but the case marked a rare U.S. criminal prosecution of a streaming service over content.' }
-        ]
-      }
-    ];
+const propaganda = [
+  {
+    id: 'triumph-will',
+    icon: '🎞️',
+    title: 'Triumph of the Will',
+    year: '1935',
+    type: 'Propaganda Film',
+    posterClass: 'poster-triumph',
+    description: 'A propaganda film commissioned by Adolf Hitler and directed by Leni Riefenstahl. It documented the 1934 Nazi Party Congress in Nuremberg and is considered one of the most technically influential — and politically destructive — propaganda films ever made.',
+    censored: [
+      { country: 'Nazi Germany', iso: '276', year: '1935', reason: 'Produced by the Nazi state to consolidate Hitler\'s authority after the Night of the Long Knives. The film was shown across Germany and used to recruit international sympathy. After WWII, it was banned in West Germany and remains tightly restricted today — but at the time, the German government was both its producer and its enforcer, the exact opposite of today\'s private-vs-state dynamic.' }
+    ]
+  },
+  {
+    id: 'pravda',
+    icon: '📰',
+    title: 'Pravda',
+    year: '1912 — 1991',
+    type: 'State Newspaper',
+    posterClass: 'poster-pravda',
+    description: 'The official newspaper of the Communist Party of the Soviet Union. At its peak it had a daily circulation of 11 million. Every article passed through Glavlit, the Soviet censorship agency, before publication — there was no separation between the press and the state.',
+    censored: [
+      { country: 'Soviet Union', iso: '643', year: 'Pre-1947', reason: 'Functioned as the primary organ of Soviet propaganda. Independent newspapers were outlawed under Lenin\'s 1917 Decree on the Press. By the 1930s, all printed material in the USSR was vetted by Glavlit, and journalists were Party employees. Pravda set the official line on every event — there was no "private media" to censor because no private media was legally allowed to exist.' }
+    ]
+  },
+  {
+    id: 'cpi-creel',
+    icon: '📢',
+    title: 'Committee on Public Information',
+    year: '1917 — 1919',
+    type: 'Government Propaganda Agency',
+    posterClass: 'poster-cpi',
+    description: 'Also known as the Creel Committee, the CPI was the U.S. federal agency created by President Woodrow Wilson to influence American public opinion during World War I. It is widely considered the first modern American propaganda apparatus.',
+    censored: [
+      { country: 'United States', iso: '840', year: '1917 — 1919', reason: 'Produced over 75 million pamphlets, recruited 75,000 "Four-Minute Men" to deliver pro-war speeches in theaters, commissioned films, and pressured newspapers into self-censorship through a "Preliminary Statement to the Press" requesting voluntary compliance. The CPI shows that even in democracies, the state historically created and controlled its own media to shape public opinion — a role now largely played by private platforms.' }
+    ]
+  },
+  {
+    id: 'hays-code',
+    icon: '🚫',
+    title: 'The Hays Code',
+    year: '1934 — 1968',
+    type: 'Industry Censorship',
+    posterClass: 'poster-hays',
+    description: 'The Motion Picture Production Code, named after Postmaster General Will H. Hays. Hollywood studios adopted it under pressure from the Catholic Legion of Decency, state censor boards, and the threat of federal regulation. For 34 years it determined what every American film could show.',
+    censored: [
+      { country: 'United States', iso: '840', year: '1934 — 1968', reason: 'Banned depictions of interracial relationships, criticism of clergy, sympathetic portrayals of crime, profanity, "lustful kissing," and any positive reference to drug use. While technically self-imposed by studios, the Code was a direct response to government threats and gave state and religious authorities effective veto power over Hollywood. It collapsed when private producers and the Supreme Court reasserted First Amendment protections.' }
+    ]
+  },
+  {
+    id: 'istituto-luce',
+    icon: '🎥',
+    title: 'Istituto Luce',
+    year: '1924 — 1945',
+    type: 'State Newsreel Agency',
+    posterClass: 'poster-luce',
+    description: 'Fascist Italy\'s government-owned film and newsreel production company. Created by Mussolini in 1924, it produced every official newsreel shown in Italian cinemas and turned cinema attendance into an instrument of state messaging.',
+    censored: [
+      { country: 'Fascist Italy', iso: '380', year: '1926 — 1945', reason: 'A 1926 decree made Luce newsreels mandatory before every film screening in Italy. The agency replaced all independent newsreel producers and glorified Mussolini\'s public appearances, military victories, and infrastructure projects. After WWII the archive survived and is now held by the Italian state — but Luce itself was a textbook example of a government becoming the sole producer and distributor of mass media.' }
+    ]
+  },
+  {
+    id: 'japan-domei',
+    icon: '📡',
+    title: 'Domei News Agency',
+    year: '1936 — 1945',
+    type: 'State News Monopoly',
+    posterClass: 'poster-japan',
+    description: 'The sole official news agency of the Empire of Japan during WWII, formed by merging the country\'s two existing wire services under government control. It supplied all war reporting to every newspaper in Japan and occupied territories.',
+    censored: [
+      { country: 'Imperial Japan', iso: '392', year: '1936 — 1945', reason: 'Coordinated with the Special Higher Police ("Tokkō") to suppress any reporting of Japanese military setbacks. The 1925 Peace Preservation Law made criticism of the Emperor or "national polity" a crime. By 1941, all newspapers had been merged into prefecture-level monopolies, ensuring no independent perspective could reach the public — the polar opposite of the modern fragmented private media landscape.' }
+    ]
+  },
+  {
+    id: 'british-moi',
+    icon: '📻',
+    title: 'Ministry of Information',
+    year: '1939 — 1946',
+    type: 'Government Propaganda Department',
+    posterClass: 'poster-moi',
+    description: 'The British government department responsible for publicity and propaganda during the Second World War. The MoI coordinated press releases, posters ("Keep Calm and Carry On" was theirs), films, BBC broadcasts, and wartime censorship — turning a democracy into a near-total information state for the war\'s duration.',
+    censored: [
+      { country: 'United Kingdom', iso: '826', year: '1939 — 1946', reason: 'The MoI\'s Press and Censorship Bureau approved or blocked every wartime news report. The BBC, technically independent, was placed under direct government direction. The Defence Notice (D-Notice) system, established earlier, was used to silence stories the government deemed harmful. Even within a free democracy, the wartime British state asserted near-total control over media — a function it has since largely abandoned to private outlets.' }
+    ]
+  },
+  {
+    id: 'sedition-act',
+    icon: '⚖️',
+    title: 'The Sedition Act of 1918',
+    year: '1918 — 1921',
+    type: 'Censorship Law',
+    posterClass: 'poster-sedition',
+    description: 'A U.S. federal law that amended the Espionage Act of 1917 to criminalize "disloyal, profane, scurrilous, or abusive" language about the U.S. government, flag, or military during World War I.',
+    censored: [
+      { country: 'United States', iso: '840', year: '1918 — 1921', reason: 'Used to prosecute over 2,000 Americans, including Socialist Party leader Eugene Debs, who was sentenced to 10 years in prison for an anti-war speech. The Post Office seized magazines, including The Masses, that opposed the war. Repealed in 1921, but its precedent shaped 20th-century U.S. wartime censorship. The law illustrates that pre-Cold War "censorship" came from the state directly, not from corporate platforms.' }
+    ]
+  },
+  {
+    id: 'book-burnings',
+    icon: '🔥',
+    title: 'Nazi Book Burnings',
+    year: '1933',
+    type: 'State Destruction of Literature',
+    posterClass: 'poster-book-burning',
+    description: 'On May 10, 1933, in coordinated public ceremonies across 34 German university towns, the German Student Union and Nazi authorities burned over 25,000 books deemed "un-German." Works by Einstein, Freud, Marx, Hemingway, Helen Keller, and many Jewish and leftist authors were destroyed.',
+    censored: [
+      { country: 'Nazi Germany', iso: '276', year: '1933', reason: 'Organized as a public spectacle and broadcast nationwide on state radio. Goebbels addressed the Berlin burning in person. The Reichsschrifttumskammer (Reich Chamber of Literature) then formally regulated all German publishing, controlling what books could be written, printed, or sold. As Heinrich Heine had written a century earlier: "Where they burn books, they will ultimately burn people also." The state didn\'t just censor — it physically destroyed the material itself.' }
+    ]
+  }
+];
 
-    const unavailableCountries = [
-      {
-        id: 'china',
-        name: 'China',
-        iso: '156',
-        badge: 'Never Launched',
-        description: 'Netflix has never operated in mainland China. The Chinese government heavily regulates foreign streaming services through the National Radio and Television Administration. Netflix CEO Reed Hastings stated in 2016 that entering China was "off the table" for the foreseeable future. Chinese viewers must use VPNs to access the service.'
-      },
-      {
-        id: 'north-korea',
-        name: 'North Korea',
-        iso: '408',
-        badge: 'Blocked',
-        description: 'The North Korean government tightly controls all internet access, and Netflix is unavailable to its citizens. The country operates a closed intranet system, and access to outside media is criminalized. State media has occasionally criticized Netflix content, including "Squid Game," as evidence of South Korean and Western moral decay.'
-      },
-      {
-        id: 'russia',
-        name: 'Russia',
-        iso: '643',
-        badge: 'Suspended 2022',
-        description: 'Netflix suspended its service in Russia in March 2022 in response to the Russian invasion of Ukraine. The company also refused to comply with a new Russian law requiring streaming services to carry 20 Russian state-controlled propaganda channels. Subscriptions were halted and the service became inaccessible.'
-      },
-      {
-        id: 'syria',
-        name: 'Syria',
-        iso: '760',
-        badge: 'U.S. Sanctions',
-        description: 'Netflix is unavailable in Syria due to United States economic sanctions that prohibit U.S. companies from operating there. The restrictions stem from the U.S. Treasury\'s Office of Foreign Assets Control (OFAC) designations against the Syrian government.'
-      },
-      {
-        id: 'crimea',
-        name: 'Crimea',
-        iso: '643-crimea',
-        badge: 'U.S. Sanctions',
-        description: 'Netflix is unavailable in Russian-occupied Crimea due to U.S. sanctions imposed after Russia\'s annexation of the territory in 2014. OFAC restrictions prohibit American companies from providing services in the region.'
-      },
-      {
-        id: 'iran',
-        name: 'Iran',
-        iso: '364',
-        badge: 'U.S. Sanctions',
-        description: 'Netflix does not officially operate in Iran due to long-standing U.S. economic sanctions against the Iranian government. The U.S. Treasury\'s OFAC sanctions prohibit American companies from providing services in Iran. Despite this, Iranian viewers reportedly access the platform widely through VPNs, which the Iranian government has periodically attempted to block.'
-      }
-    ];
+const totalitarianStates = [
+  {
+    id: 'nazi-germany',
+    name: 'Nazi Germany',
+    iso: '276',
+    badge: '1933 — 1945',
+    description: 'Under the Reichsministerium für Volksaufklärung und Propaganda, led by Joseph Goebbels, the Nazi regime achieved total control of German media. The Reichskulturkammer required every journalist, writer, filmmaker, and artist to be a registered member — non-members were forbidden from working. The 1933 process of Gleichschaltung ("coordination") merged all newspapers, radio, film, and theater under Party control. By 1945, nearly every German had access only to state-approved content.'
+  },
+  {
+    id: 'soviet-union',
+    name: 'Soviet Union',
+    iso: '643',
+    badge: '1917 — 1991',
+    description: 'The Decree on the Press (1917) shut down all non-Bolshevik newspapers within weeks of the revolution. Glavlit, established 1922, censored every printed work in the USSR — books, magazines, scientific papers, even theater scripts. Independent publishing was a criminal offense; underground "samizdat" literature was punishable by years in the gulag. There was no private media to censor because none was permitted to exist.'
+  },
+  {
+    id: 'fascist-italy',
+    name: 'Fascist Italy',
+    iso: '380',
+    badge: '1922 — 1943',
+    description: 'Mussolini\'s 1923 Press Law gave provincial Prefects power to suspend any newspaper. The 1925 Press Law required all journalists to register with state-controlled associations. The Ministry of Popular Culture (Minculpop), founded in 1937, coordinated press, radio, and film. Istituto Luce monopolized newsreel production. By the 1930s, every Italian media outlet operated under direct or indirect state authority.'
+  },
+  {
+    id: 'imperial-japan',
+    name: 'Imperial Japan',
+    iso: '392',
+    badge: '1925 — 1945',
+    description: 'The Peace Preservation Law (1925) criminalized any criticism of the Emperor or the "national polity" (kokutai). The Special Higher Police (Tokkō) surveilled writers, editors, and academics, often arresting suspects without warrant. By 1941, the National Mobilization Law had merged Japan\'s newspapers into prefecture-level monopolies under the Domei wire service. Even private letters were inspected.'
+  },
+  {
+    id: 'francoist-spain',
+    name: 'Francoist Spain',
+    iso: '724',
+    badge: '1939 — 1975',
+    description: 'The 1938 Press Law, imposed during the Civil War, required all newspaper editors to be government-approved and all foreign news to pass through the Falangist EFE wire service. Books and films were subject to prior censorship by both state and Catholic Church authorities. The law remained largely intact until Franco\'s death in 1975, making Spain one of the longest-running pre-Cold War censorship regimes to continue into the modern era.'
+  }
+];
 
-    // =============================================================
-    // PRE-COLD WAR DATA — Government propaganda & press censorship (pre-1947)
-    // =============================================================
+// =============================================================
+// ERA CONFIG — what each tab shows
+// =============================================================
 
-    const propaganda = [
-      {
-        id: 'triumph-will',
-        icon: '🎞️',
-        title: 'Triumph of the Will',
-        year: '1935',
-        type: 'Propaganda Film',
-        posterClass: 'poster-triumph',
-        description: 'A propaganda film commissioned by Adolf Hitler and directed by Leni Riefenstahl. It documented the 1934 Nazi Party Congress in Nuremberg and is considered one of the most technically influential — and politically destructive — propaganda films ever made.',
-        censored: [
-          { country: 'Nazi Germany', iso: '276', year: '1935', reason: 'Produced by the Nazi state to consolidate Hitler\'s authority after the Night of the Long Knives. The film was shown across Germany and used to recruit international sympathy. After WWII, it was banned in West Germany and remains tightly restricted today — but at the time, the German government was both its producer and its enforcer, the exact opposite of today\'s private-vs-state dynamic.' }
-        ]
-      },
-      {
-        id: 'pravda',
-        icon: '📰',
-        title: 'Pravda',
-        year: '1912 — 1991',
-        type: 'State Newspaper',
-        posterClass: 'poster-pravda',
-        description: 'The official newspaper of the Communist Party of the Soviet Union. At its peak it had a daily circulation of 11 million. Every article passed through Glavlit, the Soviet censorship agency, before publication — there was no separation between the press and the state.',
-        censored: [
-          { country: 'Soviet Union', iso: '643', year: 'Pre-1947', reason: 'Functioned as the primary organ of Soviet propaganda. Independent newspapers were outlawed under Lenin\'s 1917 Decree on the Press. By the 1930s, all printed material in the USSR was vetted by Glavlit, and journalists were Party employees. Pravda set the official line on every event — there was no "private media" to censor because no private media was legally allowed to exist.' }
-        ]
-      },
-      {
-        id: 'cpi-creel',
-        icon: '📢',
-        title: 'Committee on Public Information',
-        year: '1917 — 1919',
-        type: 'Government Propaganda Agency',
-        posterClass: 'poster-cpi',
-        description: 'Also known as the Creel Committee, the CPI was the U.S. federal agency created by President Woodrow Wilson to influence American public opinion during World War I. It is widely considered the first modern American propaganda apparatus.',
-        censored: [
-          { country: 'United States', iso: '840', year: '1917 — 1919', reason: 'Produced over 75 million pamphlets, recruited 75,000 "Four-Minute Men" to deliver pro-war speeches in theaters, commissioned films, and pressured newspapers into self-censorship through a "Preliminary Statement to the Press" requesting voluntary compliance. The CPI shows that even in democracies, the state historically created and controlled its own media to shape public opinion — a role now largely played by private platforms.' }
-        ]
-      },
-      {
-        id: 'hays-code',
-        icon: '🚫',
-        title: 'The Hays Code',
-        year: '1934 — 1968',
-        type: 'Industry Censorship',
-        posterClass: 'poster-hays',
-        description: 'The Motion Picture Production Code, named after Postmaster General Will H. Hays. Hollywood studios adopted it under pressure from the Catholic Legion of Decency, state censor boards, and the threat of federal regulation. For 34 years it determined what every American film could show.',
-        censored: [
-          { country: 'United States', iso: '840', year: '1934 — 1968', reason: 'Banned depictions of interracial relationships, criticism of clergy, sympathetic portrayals of crime, profanity, "lustful kissing," and any positive reference to drug use. While technically self-imposed by studios, the Code was a direct response to government threats and gave state and religious authorities effective veto power over Hollywood. It collapsed when private producers and the Supreme Court reasserted First Amendment protections.' }
-        ]
-      },
-      {
-        id: 'istituto-luce',
-        icon: '🎥',
-        title: 'Istituto Luce',
-        year: '1924 — 1945',
-        type: 'State Newsreel Agency',
-        posterClass: 'poster-luce',
-        description: 'Fascist Italy\'s government-owned film and newsreel production company. Created by Mussolini in 1924, it produced every official newsreel shown in Italian cinemas and turned cinema attendance into an instrument of state messaging.',
-        censored: [
-          { country: 'Fascist Italy', iso: '380', year: '1926 — 1945', reason: 'A 1926 decree made Luce newsreels mandatory before every film screening in Italy. The agency replaced all independent newsreel producers and glorified Mussolini\'s public appearances, military victories, and infrastructure projects. After WWII the archive survived and is now held by the Italian state — but Luce itself was a textbook example of a government becoming the sole producer and distributor of mass media.' }
-        ]
-      },
-      {
-        id: 'japan-domei',
-        icon: '📡',
-        title: 'Domei News Agency',
-        year: '1936 — 1945',
-        type: 'State News Monopoly',
-        posterClass: 'poster-japan',
-        description: 'The sole official news agency of the Empire of Japan during WWII, formed by merging the country\'s two existing wire services under government control. It supplied all war reporting to every newspaper in Japan and occupied territories.',
-        censored: [
-          { country: 'Imperial Japan', iso: '392', year: '1936 — 1945', reason: 'Coordinated with the Special Higher Police ("Tokkō") to suppress any reporting of Japanese military setbacks. The 1925 Peace Preservation Law made criticism of the Emperor or "national polity" a crime. By 1941, all newspapers had been merged into prefecture-level monopolies, ensuring no independent perspective could reach the public — the polar opposite of the modern fragmented private media landscape.' }
-        ]
-      },
-      {
-        id: 'british-moi',
-        icon: '📻',
-        title: 'Ministry of Information',
-        year: '1939 — 1946',
-        type: 'Government Propaganda Department',
-        posterClass: 'poster-moi',
-        description: 'The British government department responsible for publicity and propaganda during the Second World War. The MoI coordinated press releases, posters ("Keep Calm and Carry On" was theirs), films, BBC broadcasts, and wartime censorship — turning a democracy into a near-total information state for the war\'s duration.',
-        censored: [
-          { country: 'United Kingdom', iso: '826', year: '1939 — 1946', reason: 'The MoI\'s Press and Censorship Bureau approved or blocked every wartime news report. The BBC, technically independent, was placed under direct government direction. The Defence Notice (D-Notice) system, established earlier, was used to silence stories the government deemed harmful. Even within a free democracy, the wartime British state asserted near-total control over media — a function it has since largely abandoned to private outlets.' }
-        ]
-      },
-      {
-        id: 'sedition-act',
-        icon: '⚖️',
-        title: 'The Sedition Act of 1918',
-        year: '1918 — 1921',
-        type: 'Censorship Law',
-        posterClass: 'poster-sedition',
-        description: 'A U.S. federal law that amended the Espionage Act of 1917 to criminalize "disloyal, profane, scurrilous, or abusive" language about the U.S. government, flag, or military during World War I.',
-        censored: [
-          { country: 'United States', iso: '840', year: '1918 — 1921', reason: 'Used to prosecute over 2,000 Americans, including Socialist Party leader Eugene Debs, who was sentenced to 10 years in prison for an anti-war speech. The Post Office seized magazines, including The Masses, that opposed the war. Repealed in 1921, but its precedent shaped 20th-century U.S. wartime censorship. The law illustrates that pre-Cold War "censorship" came from the state directly, not from corporate platforms.' }
-        ]
-      },
-      {
-        id: 'book-burnings',
-        icon: '🔥',
-        title: 'Nazi Book Burnings',
-        year: '1933',
-        type: 'State Destruction of Literature',
-        posterClass: 'poster-book-burning',
-        description: 'On May 10, 1933, in coordinated public ceremonies across 34 German university towns, the German Student Union and Nazi authorities burned over 25,000 books deemed "un-German." Works by Einstein, Freud, Marx, Hemingway, Helen Keller, and many Jewish and leftist authors were destroyed.',
-        censored: [
-          { country: 'Nazi Germany', iso: '276', year: '1933', reason: 'Organized as a public spectacle and broadcast nationwide on state radio. Goebbels addressed the Berlin burning in person. The Reichsschrifttumskammer (Reich Chamber of Literature) then formally regulated all German publishing, controlling what books could be written, printed, or sold. As Heinrich Heine had written a century earlier: "Where they burn books, they will ultimately burn people also." The state didn\'t just censor — it physically destroyed the material itself.' }
-        ]
-      }
-    ];
+let currentEra = 'modern';
 
-    const totalitarianStates = [
-      {
-        id: 'nazi-germany',
-        name: 'Nazi Germany',
-        iso: '276',
-        badge: '1933 — 1945',
-        description: 'Under the Reichsministerium für Volksaufklärung und Propaganda, led by Joseph Goebbels, the Nazi regime achieved total control of German media. The Reichskulturkammer required every journalist, writer, filmmaker, and artist to be a registered member — non-members were forbidden from working. The 1933 process of Gleichschaltung ("coordination") merged all newspapers, radio, film, and theater under Party control. By 1945, nearly every German had access only to state-approved content.'
-      },
-      {
-        id: 'soviet-union',
-        name: 'Soviet Union',
-        iso: '643',
-        badge: '1917 — 1991',
-        description: 'The Decree on the Press (1917) shut down all non-Bolshevik newspapers within weeks of the revolution. Glavlit, established 1922, censored every printed work in the USSR — books, magazines, scientific papers, even theater scripts. Independent publishing was a criminal offense; underground "samizdat" literature was punishable by years in the gulag. There was no private media to censor because none was permitted to exist.'
-      },
-      {
-        id: 'fascist-italy',
-        name: 'Fascist Italy',
-        iso: '380',
-        badge: '1922 — 1943',
-        description: 'Mussolini\'s 1923 Press Law gave provincial Prefects power to suspend any newspaper. The 1925 Press Law required all journalists to register with state-controlled associations. The Ministry of Popular Culture (Minculpop), founded in 1937, coordinated press, radio, and film. Istituto Luce monopolized newsreel production. By the 1930s, every Italian media outlet operated under direct or indirect state authority.'
-      },
-      {
-        id: 'imperial-japan',
-        name: 'Imperial Japan',
-        iso: '392',
-        badge: '1925 — 1945',
-        description: 'The Peace Preservation Law (1925) criminalized any criticism of the Emperor or the "national polity" (kokutai). The Special Higher Police (Tokkō) surveilled writers, editors, and academics, often arresting suspects without warrant. By 1941, the National Mobilization Law had merged Japan\'s newspapers into prefecture-level monopolies under the Domei wire service. Even private letters were inspected.'
-      },
-      {
-        id: 'francoist-spain',
-        name: 'Francoist Spain',
-        iso: '724',
-        badge: '1939 — 1975',
-        description: 'The 1938 Press Law, imposed during the Civil War, required all newspaper editors to be government-approved and all foreign news to pass through the Falangist EFE wire service. Books and films were subject to prior censorship by both state and Catholic Church authorities. The law remained largely intact until Franco\'s death in 1975, making Spain one of the longest-running pre-Cold War censorship regimes to continue into the modern era.'
-      }
-    ];
+const ERAS = {
+  modern: {
+    cards: () => shows,
+    countries: () => unavailableCountries,
+    heroTag: '★ Modern Era · Private Streaming',
+    heroTitle: 'Who Decides What the World Watches?',
+    heroDesc: 'Streaming services like Netflix shifted media power from governments to private corporations — but governments still push back. Explore the shows that have been censored, removed, or blocked around the world.',
+    heroBtn1: '▶ Browse Censored Content',
+    heroBtn2: 'ⓘ Banned Countries',
+    contentHeading: 'Censored Around the World',
+    contentSubtitle: 'Click a title to see where it\'s been blocked or removed and why',
+    unavailableHeading: 'Countries Where Netflix Doesn\'t Stream',
+    unavailableSubtitle: 'Click for the political and legal reasons',
+    badgeText: 'CENSORED',
+    badgeClass: '',
+    modalTag: '★ Censored Title',
+    modalMapHeading: 'Where this title is censored',
+    modalMapSubtitle: 'Highlighted countries have requested or enforced removal of this content from Netflix.',
+    modalReasonsHeading: 'Why It Was Censored',
+  },
+  precoldwar: {
+    cards: () => propaganda,
+    countries: () => totalitarianStates,
+    heroTag: '★ Pre-Cold War Era · State Media',
+    heroTitle: 'When the Government Was the Network',
+    heroDesc: 'Before private streaming corporations existed, states produced their own propaganda and tightly controlled what their citizens could read, watch, or hear. The press was an arm of the state — not its critic.',
+    heroBtn1: '▶ Browse State Propaganda',
+    heroBtn2: 'ⓘ Totalitarian Press States',
+    contentHeading: 'State Propaganda & Press Control',
+    contentSubtitle: 'Click a title to see where state-controlled media shaped public opinion',
+    unavailableHeading: 'Where Free Press Was Outlawed',
+    unavailableSubtitle: 'Authoritarian regimes that turned media into a state monopoly',
+    badgeText: 'STATE MEDIA',
+    badgeClass: 'state-media',
+    modalTag: '★ State-Controlled Media',
+    modalMapHeading: 'Where this was produced or enforced',
+    modalMapSubtitle: 'Highlighted countries produced, distributed, or enforced this state-controlled media.',
+    modalReasonsHeading: 'Purpose & Scope',
+  }
+};
 
-    // =============================================================
-    // ERA CONFIG — what each tab shows
-    // =============================================================
+function setEra(era) {
+  if (!ERAS[era] || era === currentEra) return;
+  currentEra = era;
+  const cfg = ERAS[era];
 
-    let currentEra = 'modern';
+  // Toggle nav buttons
+  document.querySelectorAll('.era-tab').forEach(tab => {
+    const active = tab.dataset.era === era;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
 
-    const AUTO_DEMO_STEP_DELAY = 7000;
-    const AUTO_DEMO_MODAL_DELAY = 1450;
-    const AUTO_DEMO_SPOTLIGHT_DURATION = 1250;
-    const MODAL_ANIMATION_MS = 280;
-    const AUTO_DEMO_SEQUENCE = [
-      { era: 'modern', sectionId: 'content', rowId: 'shows-row', kind: 'show' },
-      { era: 'modern', sectionId: 'unavailable', rowId: 'countries-row', kind: 'country' },
-      { era: 'precoldwar', sectionId: 'content', rowId: 'shows-row', kind: 'show' },
-      { era: 'precoldwar', sectionId: 'unavailable', rowId: 'countries-row', kind: 'country' }
-    ];
-    const autoDemoState = {
-      active: false,
-      timer: null,
-      spotlightTimer: null,
-      step: 0,
-      showIndex: { modern: 0, precoldwar: 0 },
-      countryIndex: { modern: 0, precoldwar: 0 }
-    };
-    let modalHideTimer = null;
+  // Update hero
+  document.getElementById('hero-tag').textContent = cfg.heroTag;
+  document.getElementById('hero-title').textContent = cfg.heroTitle;
+  document.getElementById('hero-desc').textContent = cfg.heroDesc;
+  document.getElementById('hero-btn-1').textContent = cfg.heroBtn1;
+  document.getElementById('hero-btn-2').textContent = cfg.heroBtn2;
+  document.getElementById('hero').classList.toggle('era-precoldwar', era === 'precoldwar');
 
-    const ERAS = {
-      modern: {
-        cards: () => shows,
-        countries: () => unavailableCountries,
-        heroTag: '★ Modern Era · Private Streaming',
-        heroTitle: 'Who Decides What the World Watches?',
-        heroDesc: 'Streaming services like Netflix shifted media power from governments to private corporations — but governments still push back. Explore the shows that have been censored, removed, or blocked around the world.',
-        heroBtn1: '▶ Browse Censored Content',
-        heroBtn2: 'ⓘ Banned Countries',
-        contentHeading: 'Censored Around the World',
-        contentSubtitle: 'Click a title to see where it\'s been blocked or removed and why',
-        unavailableHeading: 'Countries Where Netflix Doesn\'t Stream',
-        unavailableSubtitle: 'Click for the political and legal reasons',
-        badgeText: 'CENSORED',
-        badgeClass: '',
-        modalTag: '★ Censored Title',
-        modalMapHeading: 'Where this title is censored',
-        modalMapSubtitle: 'Highlighted countries have requested or enforced removal of this content from Netflix.',
-        modalReasonsHeading: 'Why It Was Censored',
-      },
-      precoldwar: {
-        cards: () => propaganda,
-        countries: () => totalitarianStates,
-        heroTag: '★ Pre-Cold War Era · State Media',
-        heroTitle: 'When the Government Was the Network',
-        heroDesc: 'Before private streaming corporations existed, states produced their own propaganda and tightly controlled what their citizens could read, watch, or hear. The press was an arm of the state — not its critic.',
-        heroBtn1: '▶ Browse State Propaganda',
-        heroBtn2: 'ⓘ Totalitarian Press States',
-        contentHeading: 'State Propaganda & Press Control',
-        contentSubtitle: 'Click a title to see where state-controlled media shaped public opinion',
-        unavailableHeading: 'Where Free Press Was Outlawed',
-        unavailableSubtitle: 'Authoritarian regimes that turned media into a state monopoly',
-        badgeText: 'STATE MEDIA',
-        badgeClass: 'state-media',
-        modalTag: '★ State-Controlled Media',
-        modalMapHeading: 'Where this was produced or enforced',
-        modalMapSubtitle: 'Highlighted countries produced, distributed, or enforced this state-controlled media.',
-        modalReasonsHeading: 'Purpose & Scope',
-      }
-    };
+  // Update row headings
+  document.getElementById('content-heading').textContent = cfg.contentHeading;
+  document.getElementById('content-subtitle').textContent = cfg.contentSubtitle;
+  document.getElementById('unavailable-heading').textContent = cfg.unavailableHeading;
+  document.getElementById('unavailable-subtitle').textContent = cfg.unavailableSubtitle;
 
-    function setEra(era, options = {}) {
-      if (autoDemoState.active && !options.fromDemo) stopAutoDemo();
-      if (!ERAS[era] || era === currentEra) return;
-      currentEra = era;
-      const cfg = ERAS[era];
+  // Close any open modal so we don't leak content from the other era
+  closeModal();
 
-      // Toggle nav buttons
-      document.querySelectorAll('.era-tab').forEach(tab => {
-        const active = tab.dataset.era === era;
-        tab.classList.toggle('active', active);
-        tab.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
+  // Re-render cards & countries
+  renderShows();
+  renderCountries();
+}
 
-      // Update hero
-      document.getElementById('hero-tag').textContent = cfg.heroTag;
-      document.getElementById('hero-title').textContent = cfg.heroTitle;
-      document.getElementById('hero-desc').textContent = cfg.heroDesc;
-      document.getElementById('hero-btn-1').textContent = cfg.heroBtn1;
-      document.getElementById('hero-btn-2').textContent = cfg.heroBtn2;
-      document.getElementById('hero').classList.toggle('era-precoldwar', era === 'precoldwar');
+// =============================================================
+// RENDER SHOW CARDS
+// =============================================================
 
-      // Update row headings
-      document.getElementById('content-heading').textContent = cfg.contentHeading;
-      document.getElementById('content-subtitle').textContent = cfg.contentSubtitle;
-      document.getElementById('unavailable-heading').textContent = cfg.unavailableHeading;
-      document.getElementById('unavailable-subtitle').textContent = cfg.unavailableSubtitle;
+function renderShows() {
+  const row = document.getElementById('shows-row');
+  row.innerHTML = '';
+  const cfg = ERAS[currentEra];
+  const list = cfg.cards();
+  list.forEach(show => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.tabIndex = 0;
 
-      // Close any open modal so we don't leak content from the other era
-      closeModal();
+    const url = (POSTER_URLS[show.id] || '').trim();
+    const hasImage = !!url;
 
-      // Re-render cards & countries
-      renderShows();
-      renderCountries();
-    }
+    const imgTag = hasImage
+      ? `<img class="poster-image" src="${url}" alt="${show.title} poster" loading="lazy" referrerpolicy="no-referrer">`
+      : '';
 
-    // =============================================================
-    // RENDER SHOW CARDS
-    // =============================================================
-
-    function renderShows() {
-      const row = document.getElementById('shows-row');
-      row.innerHTML = '';
-      const cfg = ERAS[currentEra];
-      const list = cfg.cards();
-      list.forEach(show => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.tabIndex = 0;
-
-        const url = (POSTER_URLS[show.id] || '').trim();
-        const hasImage = !!url;
-
-        const imgTag = hasImage
-          ? `<img class="poster-image" src="${url}" alt="${show.title} poster" loading="lazy" referrerpolicy="no-referrer">`
-          : '';
-
-        card.innerHTML = `
+    card.innerHTML = `
       <div class="card-poster ${show.posterClass} ${hasImage ? 'has-image' : ''}">
         ${imgTag}
         <div class="card-icon">${show.icon || '🎬'}</div>
@@ -1782,355 +1057,312 @@
         </div>
       </div>
     `;
-        card.addEventListener('click', () => openShowModal(show));
-        card.addEventListener('keydown', e => { if (e.key === 'Enter') openShowModal(show); });
+    card.addEventListener('click', () => openShowModal(show));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter') openShowModal(show); });
 
-        if (hasImage) {
-          const imgEl = card.querySelector('.poster-image');
-          imgEl.addEventListener('load', () => imgEl.classList.add('loaded'));
-          imgEl.addEventListener('error', () => {
-            const poster = card.querySelector('.card-poster');
-            poster.classList.remove('has-image');
-            imgEl.remove();
-          });
-        }
-
-        row.appendChild(card);
+    if (hasImage) {
+      const imgEl = card.querySelector('.poster-image');
+      imgEl.addEventListener('load', () => imgEl.classList.add('loaded'));
+      imgEl.addEventListener('error', () => {
+        const poster = card.querySelector('.card-poster');
+        poster.classList.remove('has-image');
+        imgEl.remove();
       });
     }
 
-    function renderCountries() {
-      const row = document.getElementById('countries-row');
-      row.innerHTML = '';
-      const cfg = ERAS[currentEra];
-      const list = cfg.countries();
-      list.forEach(c => {
-        const flag = getCountryFlag(c.id);
-        const flagMarkup = flag ? `
-        <div class="country-flag-block">
-          <img class="country-flag" src="${flag.src}" alt="${flag.alt}" loading="lazy" referrerpolicy="no-referrer">
-          <span class="country-flag-label">${flag.label}</span>
-        </div>
-      ` : '';
-        const card = document.createElement('div');
-        card.className = 'country-card' + (currentEra === 'precoldwar' ? ' era-precoldwar' : '');
-        card.tabIndex = 0;
-        card.innerHTML = `
+    row.appendChild(card);
+  });
+}
+
+function renderCountries() {
+  const row = document.getElementById('countries-row');
+  row.innerHTML = '';
+  const cfg = ERAS[currentEra];
+  const list = cfg.countries();
+  list.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'country-card' + (currentEra === 'precoldwar' ? ' era-precoldwar' : '');
+    card.tabIndex = 0;
+    card.innerHTML = `
       <div class="country-card-content">
-        <div class="country-card-top">
-          <div class="country-card-copy">
-            <span class="country-badge">${c.badge}</span>
-            <div class="country-name">${c.name}</div>
-          </div>
-          ${flagMarkup}
+        <span class="country-badge">${c.badge}</span>
+        <div>
+          <div class="country-name">${c.name}</div>
+          <div class="country-reason">${currentEra === 'precoldwar' ? 'Tap to learn how the state controlled all media' : 'Tap to learn why Netflix doesn\'t operate here'}</div>
         </div>
-        <div class="country-reason">${currentEra === 'precoldwar' ? 'Tap to learn how the state controlled all media' : 'Tap to learn why Netflix doesn\'t operate here'}</div>
       </div>
     `;
-        card.addEventListener('click', () => openCountryModal(c));
-        card.addEventListener('keydown', e => { if (e.key === 'Enter') openCountryModal(c); });
-        row.appendChild(card);
-      });
-    }
+    card.addEventListener('click', () => openCountryModal(c));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter') openCountryModal(c); });
+    row.appendChild(card);
+  });
+}
 
-    function updateAutoDemoButton() {
-      const button = document.getElementById('auto-demo-toggle');
-      if (!button) return;
-      button.textContent = autoDemoState.active ? 'Stop Demo' : 'Auto Demo';
-      button.classList.toggle('active', autoDemoState.active);
-      button.setAttribute('aria-pressed', autoDemoState.active ? 'true' : 'false');
-    }
+// =============================================================
+// MODAL + MAP
+// =============================================================
 
-    function clearAutoDemoTimer() {
-      if (autoDemoState.timer) {
-        clearTimeout(autoDemoState.timer);
-        autoDemoState.timer = null;
-      }
-    }
+let worldData = null;
+const tooltip = document.getElementById('tooltip');
 
-    function clearDemoSpotlight() {
-      document.querySelectorAll('.demo-spotlight').forEach(el => el.classList.remove('demo-spotlight'));
-      if (autoDemoState.spotlightTimer) {
-        clearTimeout(autoDemoState.spotlightTimer);
-        autoDemoState.spotlightTimer = null;
-      }
-    }
+async function loadWorld() {
+  if (worldData) return worldData;
+  try {
+    const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+    worldData = await res.json();
+    return worldData;
+  } catch (e) {
+    console.error('Failed to load world data', e);
+    return null;
+  }
+}
 
-    function getListForDemo(era, kind) {
-      return kind === 'show' ? ERAS[era].cards() : ERAS[era].countries();
-    }
+async function renderMap(highlightISOs) {
+  const svg = d3.select('#map');
+  svg.selectAll('*').remove();
 
-    function centerCardInRow(rowId, index) {
-      const row = document.getElementById(rowId);
-      if (!row || !row.children[index]) return;
-      const card = row.children[index];
-      const targetLeft = Math.max(0, card.offsetLeft - ((row.clientWidth - card.clientWidth) / 2));
-      row.scrollTo({ left: targetLeft, behavior: 'smooth' });
-    }
+  const data = await loadWorld();
+  if (!data) {
+    svg.append('text').attr('x', 500).attr('y', 250).attr('text-anchor','middle')
+       .attr('fill','#666').text('Map could not load (check internet).');
+    return;
+  }
 
-    function highlightDemoCard(rowId, index) {
-      const row = document.getElementById(rowId);
-      const card = row && row.children[index];
-      if (!card) return;
-      clearDemoSpotlight();
-      card.classList.add('demo-spotlight');
-      autoDemoState.spotlightTimer = window.setTimeout(() => {
-        card.classList.remove('demo-spotlight');
-        autoDemoState.spotlightTimer = null;
-      }, AUTO_DEMO_SPOTLIGHT_DURATION);
-    }
+  const countries = topojson.feature(data, data.objects.countries).features;
+  const width = 1000, height = 500;
+  const projection = d3.geoNaturalEarth1().fitSize([width, height], { type: 'Sphere' });
+  const path = d3.geoPath(projection);
 
-    function spotlightDemoItem(phase) {
-      const list = getListForDemo(phase.era, phase.kind);
-      if (!list.length) return;
+  // Build a Set of highlighted ISO numeric codes (left-padded for matching)
+  const highlightSet = new Set(highlightISOs.map(c => String(parseInt(c, 10))));
 
-      const indexKey = phase.kind === 'show' ? 'showIndex' : 'countryIndex';
-      const demoIndex = autoDemoState[indexKey][phase.era] % list.length;
-      autoDemoState[indexKey][phase.era] += 1;
-
-      centerCardInRow(phase.rowId, demoIndex);
-      highlightDemoCard(phase.rowId, demoIndex);
-
-      window.setTimeout(() => {
-        if (!autoDemoState.active) return;
-        const item = list[demoIndex];
-        if (phase.kind === 'show') openShowModal(item);
-        else openCountryModal(item);
-      }, AUTO_DEMO_MODAL_DELAY);
-    }
-
-    function runAutoDemoStep() {
-      if (!autoDemoState.active) return;
-
-      const phase = AUTO_DEMO_SEQUENCE[autoDemoState.step % AUTO_DEMO_SEQUENCE.length];
-      autoDemoState.step += 1;
-
-      closeModal();
-      setEra(phase.era, { fromDemo: true });
-      document.getElementById(phase.sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
-      spotlightDemoItem(phase);
-
-      clearAutoDemoTimer();
-      autoDemoState.timer = window.setTimeout(runAutoDemoStep, AUTO_DEMO_STEP_DELAY);
-    }
-
-    function startAutoDemo() {
-      if (autoDemoState.active) return;
-      autoDemoState.active = true;
-      autoDemoState.step = 0;
-      closeModal();
-      updateAutoDemoButton();
-      runAutoDemoStep();
-    }
-
-    function stopAutoDemo(options = {}) {
-      autoDemoState.active = false;
-      clearAutoDemoTimer();
-      clearDemoSpotlight();
-      updateAutoDemoButton();
-      if (options.closeModal !== false) closeModal();
-    }
-
-    function toggleAutoDemo() {
-      if (autoDemoState.active) stopAutoDemo();
-      else startAutoDemo();
-    }
-
-    // =============================================================
-    // MODAL + MAP
-    // =============================================================
-
-    let worldData = null;
-    const tooltip = document.getElementById('tooltip');
-
-    async function loadWorld() {
-      if (worldData) return worldData;
-      try {
-        const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json');
-        worldData = await res.json();
-        return worldData;
-      } catch (e) {
-        console.error('Failed to load world data', e);
-        return null;
-      }
-    }
-
-    async function renderMap(highlightISOs) {
-      const svg = d3.select('#map');
-      svg.selectAll('*').remove();
-
-      const data = await loadWorld();
-      if (!data) {
-        svg.append('text').attr('x', 500).attr('y', 250).attr('text-anchor', 'middle')
-          .attr('fill', '#666').text('Map could not load (check internet).');
-        return;
-      }
-
-      const countries = topojson.feature(data, data.objects.countries).features;
-      const width = 1000, height = 500;
-      const projection = d3.geoNaturalEarth1().fitSize([width, height], { type: 'Sphere' });
-      const path = d3.geoPath(projection);
-      const showTooltip = (event, d) => {
+  svg.selectAll('path')
+    .data(countries)
+    .enter()
+    .append('path')
+    .attr('d', path)
+    .attr('class', d => {
+      const id = String(parseInt(d.id, 10));
+      return 'country-path' + (highlightSet.has(id) ? ' censored' : '');
+    })
+    .attr('data-name', d => (d.properties && d.properties.name) || '')
+    .on('mousemove', function(event, d) {
+      const id = String(parseInt(d.id, 10));
+      if (highlightSet.has(id)) {
         tooltip.textContent = (d.properties && d.properties.name) || 'Country';
         tooltip.classList.add('visible');
         tooltip.style.left = (event.clientX + 12) + 'px';
         tooltip.style.top = (event.clientY + 12) + 'px';
-      };
+      }
+    })
+    .on('mouseout', () => tooltip.classList.remove('visible'));
+}
 
-      // Build a Set of highlighted ISO numeric codes (left-padded for matching)
-      const highlightSet = new Set(highlightISOs.map(c => String(parseInt(c, 10))));
+function openShowModal(show) {
+  const cfg = ERAS[currentEra];
+  document.getElementById('modal-tag').textContent = cfg.modalTag;
+  document.getElementById('modal-title').textContent = show.title;
+  document.getElementById('modal-meta').textContent = `${show.year} • ${show.type}`;
+  document.getElementById('modal-desc').textContent = show.description;
+  document.getElementById('map-heading').textContent = cfg.modalMapHeading;
+  document.getElementById('map-subtitle').textContent = cfg.modalMapSubtitle;
+  document.getElementById('reasons-heading').textContent = cfg.modalReasonsHeading;
 
-      svg.selectAll('path')
-        .data(countries)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        .attr('class', d => {
-          const id = String(parseInt(d.id, 10));
-          return 'country-path' + (highlightSet.has(id) ? ' censored' : '');
-        })
-        .attr('data-name', d => (d.properties && d.properties.name) || '')
-        .on('mousemove', function (event, d) {
-          const id = String(parseInt(d.id, 10));
-          if (highlightSet.has(id)) showTooltip(event, d);
-        })
-        .on('mouseout', () => tooltip.classList.remove('visible'));
-
-      const tinyHighlighted = countries.filter(d => {
-        const id = String(parseInt(d.id, 10));
-        if (!highlightSet.has(id)) return false;
-        const area = path.area(d);
-        const centroid = path.centroid(d);
-        return area > 0 && area < 18 && Number.isFinite(centroid[0]) && Number.isFinite(centroid[1]);
-      });
-
-      svg.selectAll('circle.country-marker')
-        .data(tinyHighlighted)
-        .enter()
-        .append('circle')
-        .attr('class', 'country-marker')
-        .attr('cx', d => path.centroid(d)[0])
-        .attr('cy', d => path.centroid(d)[1])
-        .attr('r', 5)
-        .on('mousemove', function (event, d) {
-          showTooltip(event, d);
-        })
-        .on('mouseout', () => tooltip.classList.remove('visible'));
-    }
-
-    function openShowModal(show) {
-      const cfg = ERAS[currentEra];
-      const modalFlagSlot = document.getElementById('modal-flag-slot');
-      document.getElementById('modal-tag').textContent = cfg.modalTag;
-      document.getElementById('modal-title').textContent = show.title;
-      document.getElementById('modal-meta').textContent = `${show.year} • ${show.type}`;
-      modalFlagSlot.innerHTML = '';
-      modalFlagSlot.hidden = true;
-      document.getElementById('modal-desc').textContent = show.description;
-      document.getElementById('map-heading').textContent = cfg.modalMapHeading;
-      document.getElementById('map-subtitle').textContent = cfg.modalMapSubtitle;
-      document.getElementById('reasons-heading').textContent = cfg.modalReasonsHeading;
-
-      const reasonsDiv = document.getElementById('reasons');
-      reasonsDiv.innerHTML = '';
-      show.censored.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'reason-item';
-        div.innerHTML = `
+  const reasonsDiv = document.getElementById('reasons');
+  reasonsDiv.innerHTML = '';
+  show.censored.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'reason-item';
+    div.innerHTML = `
       <div class="reason-country">${c.country} <span class="reason-year">${c.year}</span></div>
       <div class="reason-text">${c.reason}</div>
     `;
-        reasonsDiv.appendChild(div);
-      });
+    reasonsDiv.appendChild(div);
+  });
 
-      showModal();
-      renderMap(show.censored.map(c => c.iso));
-    }
+  showModal();
+  renderMap(show.censored.map(c => c.iso));
+}
 
-    function openCountryModal(c) {
-      const isPreCold = currentEra === 'precoldwar';
-      const flag = getCountryFlag(c.id);
-      const modalFlagSlot = document.getElementById('modal-flag-slot');
-      document.getElementById('modal-tag').textContent =
-        isPreCold ? '★ Totalitarian Press State' : '★ Service Unavailable';
-      document.getElementById('modal-title').textContent = c.name;
-      document.getElementById('modal-meta').textContent =
-        isPreCold ? `Period: ${c.badge}` : `Netflix Status: ${c.badge}`;
-      modalFlagSlot.innerHTML = flag ? `
-    <div class="modal-flag-block">
-      <img class="modal-flag-image" src="${flag.src}" alt="${flag.alt}" loading="lazy" referrerpolicy="no-referrer">
-      <div class="modal-flag-label">${flag.label}</div>
-    </div>
-  ` : '';
-      modalFlagSlot.hidden = !flag;
-      document.getElementById('modal-desc').textContent = c.description;
-      document.getElementById('map-heading').textContent = 'Location';
-      document.getElementById('map-subtitle').textContent =
-        isPreCold
-          ? 'This regime maintained near-total state control of media within its borders.'
-          : 'Netflix does not stream in this country. Highlighted on the map below.';
-      document.getElementById('reasons-heading').textContent =
-        isPreCold ? 'How the State Controlled the Press' : 'Why It\'s Unavailable';
+function openCountryModal(c) {
+  const isPreCold = currentEra === 'precoldwar';
+  document.getElementById('modal-tag').textContent =
+    isPreCold ? '★ Totalitarian Press State' : '★ Service Unavailable';
+  document.getElementById('modal-title').textContent = c.name;
+  document.getElementById('modal-meta').textContent =
+    isPreCold ? `Period: ${c.badge}` : `Netflix Status: ${c.badge}`;
+  document.getElementById('modal-desc').textContent = c.description;
+  document.getElementById('map-heading').textContent = 'Location';
+  document.getElementById('map-subtitle').textContent =
+    isPreCold
+      ? 'This regime maintained near-total state control of media within its borders.'
+      : 'Netflix does not stream in this country. Highlighted on the map below.';
+  document.getElementById('reasons-heading').textContent =
+    isPreCold ? 'How the State Controlled the Press' : 'Why It\'s Unavailable';
 
-      document.getElementById('reasons').innerHTML = `
+  document.getElementById('reasons').innerHTML = `
     <div class="reason-item">
       <div class="reason-country">${c.name} <span class="reason-year">${c.badge}</span></div>
       <div class="reason-text">${c.description}</div>
     </div>
   `;
 
-      showModal();
-      renderMap([c.iso.split('-')[0]]);
+  showModal();
+  renderMap([c.iso.split('-')[0]]);
+}
+
+function showModal() {
+  document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close modal on background click or ESC
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal' && !demoActive) closeModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (demoActive) stopAutoDemo();
+    else closeModal();
+  }
+});
+
+// =============================================================
+// AUTO DEMO — Museum kiosk mode
+// =============================================================
+// Cycles through every card in the current era. For each card it:
+//   1. Opens the modal
+//   2. Scrolls smoothly from top to bottom (title → desc → map → reasons)
+//   3. Pauses, closes, and moves to the next card
+// Also requests fullscreen so the tablet looks like a TV. Tap the red
+// banner at the top, hit Escape, or exit fullscreen to stop.
+// =============================================================
+
+// Tune these to make the demo faster or slower (all in milliseconds)
+const DEMO_TIMING = {
+  initialDelay:   1800,   // wait after opening so the map can render
+  scrollDuration: 7000,   // how long the top-to-bottom scroll takes
+  bottomDelay:    1800,   // pause at the bottom before closing
+  closeDelay:     500     // pause between items
+};
+
+let demoActive = false;
+let demoFrame = null;
+let demoTimeouts = [];
+
+function demoSleep(ms) {
+  return new Promise(resolve => {
+    if (!demoActive) { resolve(); return; }
+    const t = setTimeout(() => {
+      demoTimeouts = demoTimeouts.filter(x => x !== t);
+      resolve();
+    }, ms);
+    demoTimeouts.push(t);
+  });
+}
+
+function demoScroll(el, duration) {
+  return new Promise(resolve => {
+    const start = el.scrollTop;
+    const end = Math.max(0, el.scrollHeight - el.clientHeight);
+    if (end <= start + 1) { resolve(); return; }
+    const startTime = performance.now();
+    function step(now) {
+      if (!demoActive) { resolve(); return; }
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      // ease-in-out cubic for a smooth pan
+      const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      el.scrollTop = start + (end - start) * eased;
+      if (t < 1) demoFrame = requestAnimationFrame(step);
+      else resolve();
     }
+    demoFrame = requestAnimationFrame(step);
+  });
+}
 
-    function showModal() {
-      const modal = document.getElementById('modal');
-      if (modalHideTimer) {
-        clearTimeout(modalHideTimer);
-        modalHideTimer = null;
-      }
-      modal.classList.add('active');
-      requestAnimationFrame(() => modal.classList.add('visible'));
-      document.body.style.overflow = 'hidden';
+async function startAutoDemo() {
+  if (demoActive) return;
+
+  // Request fullscreen (must run synchronously from this user gesture)
+  const root = document.documentElement;
+  const requestFs = root.requestFullscreen || root.webkitRequestFullscreen
+                  || root.mozRequestFullScreen || root.msRequestFullscreen;
+  if (requestFs) {
+    try { await requestFs.call(root); } catch (e) { /* user denied or unsupported */ }
+  }
+
+  demoActive = true;
+  document.getElementById('demo-indicator').classList.add('visible');
+
+  while (demoActive) {
+    const cfg = ERAS[currentEra];
+    const items = [
+      ...cfg.cards().map(s => ({ type: 'show', data: s })),
+      ...cfg.countries().map(c => ({ type: 'country', data: c }))
+    ];
+
+    for (const item of items) {
+      if (!demoActive) break;
+
+      if (item.type === 'show') openShowModal(item.data);
+      else openCountryModal(item.data);
+
+      const modalContent = document.querySelector('.modal-content');
+      modalContent.scrollTop = 0;
+
+      await demoSleep(DEMO_TIMING.initialDelay);
+      if (!demoActive) break;
+
+      await demoScroll(modalContent, DEMO_TIMING.scrollDuration);
+      if (!demoActive) break;
+
+      await demoSleep(DEMO_TIMING.bottomDelay);
+      if (!demoActive) break;
+
+      closeModal();
+      await demoSleep(DEMO_TIMING.closeDelay);
     }
+    // After finishing all items, loop back to the start
+  }
+}
 
-    function closeModal() {
-      const modal = document.getElementById('modal');
-      modal.classList.remove('visible');
-      if (modalHideTimer) clearTimeout(modalHideTimer);
-      modalHideTimer = window.setTimeout(() => {
-        modal.classList.remove('active');
-        modalHideTimer = null;
-      }, MODAL_ANIMATION_MS);
-      document.body.style.overflow = '';
-    }
+function stopAutoDemo() {
+  demoActive = false;
+  if (demoFrame) { cancelAnimationFrame(demoFrame); demoFrame = null; }
+  demoTimeouts.forEach(t => clearTimeout(t));
+  demoTimeouts = [];
+  document.getElementById('demo-indicator').classList.remove('visible');
+  closeModal();
+  const exitFs = document.exitFullscreen || document.webkitExitFullscreen
+              || document.mozCancelFullScreen || document.msExitFullscreen;
+  if (document.fullscreenElement && exitFs) {
+    exitFs.call(document).catch(() => {});
+  }
+}
 
-    // Close modal on background click or ESC
-    document.getElementById('modal').addEventListener('click', e => {
-      if (e.target.id === 'modal') closeModal();
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModal();
-    });
-    document.addEventListener('pointerdown', e => {
-      if (!autoDemoState.active) return;
-      if (e.target.closest('#auto-demo-toggle')) return;
-      stopAutoDemo({ closeModal: false });
-    });
+// If user exits fullscreen manually (swipes, hits Esc, etc.), stop the demo
+['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']
+  .forEach(evt => document.addEventListener(evt, () => {
+    if (!document.fullscreenElement && demoActive) stopAutoDemo();
+  }));
 
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-      const header = document.getElementById('header');
-      if (window.scrollY > 50) header.classList.add('scrolled');
-      else header.classList.remove('scrolled');
-    });
+// Header scroll effect
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  if (window.scrollY > 50) header.classList.add('scrolled');
+  else header.classList.remove('scrolled');
+});
 
-    // Init
-    updateAutoDemoButton();
-    renderShows();
-    renderCountries();
-    loadWorld(); // Preload map data
-  </script>
+// Init
+renderShows();
+renderCountries();
+loadWorld(); // Preload map data
+</script>
 </body>
-
 </html>
